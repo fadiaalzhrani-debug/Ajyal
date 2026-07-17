@@ -1,37 +1,69 @@
+# إعدادات بناء تطبيق «حي أجيال» على Codemagic (iOS)
+# نفس آلية توقيع رزق/خافت المجرّبة (مفاتيح عبر متغيّرات البيئة) + خطوة رفع للمتجر.
 workflows:
   ios-ajyal:
-    name: Ajyal iOS (App Store)
+    name: أجيال iOS
     instance_type: mac_mini_m2
     max_build_duration: 60
-    integrations:
-      app_store_connect: KhafetASC
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+      cancel_previous_builds: true
     environment:
+      groups:
+        - appstore
       vars:
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
-        XCODE_SCHEME: "App"
         BUNDLE_ID: "com.ajyal.app"
-      node: 20
-      xcode: 15.4
+      node: 20.19.0
+      xcode: latest
       cocoapods: default
     scripts:
-      - name: Install dependencies
+      - name: تثبيت الحزم
         script: npm install
-      - name: Generate icons and splash
-        script: npx capacitor-assets generate --ios || true
-      - name: Add and sync iOS
+      - name: تجهيز منصة iOS
         script: |
-          [ -d ios ] || npx cap add ios
+          npx cap add ios || true
           npx cap sync ios
-      - name: Set up signing (create profile automatically)
+      - name: أيقونة التطبيق وشاشة البداية
+        script: |
+          npx capacitor-assets generate --ios
+          ls ios/App/App/Assets.xcassets/AppIcon.appiconset/ | head -20
+      - name: رقم الإصدار والإعدادات
+        script: |
+          PLIST="ios/App/App/Info.plist"
+          plutil -replace CFBundleVersion -string "$BUILD_NUMBER" "$PLIST"
+          plutil -insert CFBundleDisplayName -string "أجيال" "$PLIST" 2>/dev/null || plutil -replace CFBundleDisplayName -string "أجيال" "$PLIST"
+          ruby -e "require 'xcodeproj'; p = Xcodeproj::Project.open('ios/App/App.xcodeproj'); t = p.targets.find { |x| x.name == 'App' }; t.build_configurations.each { |c| c.build_settings['TARGETED_DEVICE_FAMILY'] = '1' }; p.save; puts 'iphone only'"
+          plutil -insert ITSAppUsesNonExemptEncryption -bool false "$PLIST" 2>/dev/null || plutil -replace ITSAppUsesNonExemptEncryption -bool false "$PLIST"
+          plutil -p "$PLIST" | grep -i -e CFBundleVersion -e CFBundleDisplayName
+      - name: تجهيز مفتاح آبل
+        script: |
+          echo "$APP_STORE_CONNECT_KEY_B64" | base64 --decode > /tmp/AuthKey.p8
+          echo "$CERTIFICATE_PRIVATE_KEY_B64" | base64 --decode > /tmp/cert_key.pem
+          head -1 /tmp/AuthKey.p8
+          head -1 /tmp/cert_key.pem
+      - name: إنشاء وإعداد شهادات التوقيع
         script: |
           keychain initialize
-          app-store-connect create-bundle-id "$BUNDLE_ID" --name "Ajyal" --platform IOS || true
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          export APP_STORE_CONNECT_PRIVATE_KEY="$(cat /tmp/AuthKey.p8)"
+          export CERTIFICATE_PRIVATE_KEY="$(cat /tmp/cert_key.pem)"
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" --create
           keychain add-certificates
           xcode-project use-profiles
-      - name: Build IPA
+      - name: بناء ملف IPA
         script: |
-          xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME"
+          cd ios/App
+          xcode-project build-ipa --workspace "App.xcworkspace" --scheme "App"
+      - name: رفع للـ App Store Connect
+        script: |
+          IPA=$(find "$CM_BUILD_DIR" -name '*.ipa' | head -1)
+          echo "IPA: $IPA"
+          export APP_STORE_CONNECT_PRIVATE_KEY="$(cat /tmp/AuthKey.p8)"
+          app-store-connect publish --path "$IPA" --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER"
     artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
