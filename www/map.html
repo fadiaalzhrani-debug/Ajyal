@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>خريطة نشاط الحي | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=11" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › خريطة الحي</nav>
+    <h1>🗺️ خريطة نشاط الحي</h1>
+    <p>الألوان تبيّن أنشط مناطق الحي حسب الوقت. اضغط أي منطقة لعرض تفاصيلها.</p>
+  </div>
+</section>
+
+<section style="padding-top:24px">
+  <div class="container">
+    <div class="map-live"><i></i> <b id="liveTotal">١٢٤٠</b> جار متفاعل في الحي هذا الأسبوع</div>
+
+    <div class="map-wrap">
+      <div class="map-panel">
+        <div class="period-tabs" id="periodTabs">
+          <button data-p="morning" class="active">🌅 الصباح</button>
+          <button data-p="evening">🌆 المساء</button>
+          <button data-p="weekend">🎊 نهاية الأسبوع</button>
+        </div>
+
+        <svg class="hood" viewBox="0 0 640 460" id="hoodSvg" role="img" aria-label="خريطة الحي">
+          <line class="road" x1="20" y1="155" x2="620" y2="155"/>
+          <line class="road" x1="20" y1="305" x2="620" y2="305"/>
+          <line class="road" x1="215" y1="20" x2="215" y2="440"/>
+          <line class="road" x1="425" y1="20" x2="425" y2="440"/>
+          <g id="zonesLayer"></g>
+        </svg>
+
+        <div class="legend">
+          <span><i class="dot" style="background:#10b981"></i> هادئ</span>
+          <span><i class="dot" style="background:#fbbf24"></i> متوسط</span>
+          <span><i class="dot" style="background:#ef4444"></i> نشيط جدًا</span>
+        </div>
+      </div>
+
+      <div class="zone-info" id="zoneInfo">
+        <div class="zi-top">
+          <span class="zi-ic" id="ziIcon">🏟️</span>
+          <div><h3 id="ziName">ملعب الحي</h3><span id="ziType">منطقة رياضية</span></div>
+        </div>
+        <span class="heat-badge" id="ziBadge">نشيط جدًا</span>
+        <div class="zi-big"><b id="ziActive">312</b><span>جار متفاعل في هذه المنطقة</span></div>
+        <div class="zi-acts">
+          <h4>أبرز الأنشطة هنا</h4>
+          <div id="ziTags"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-links">
+      <a href="restaurants.html">المطاعم</a>
+      <a href="events.html">الفعاليات</a>
+      <a href="events.html#comp">المسابقات</a>
+      <a href="services.html">الخدمات</a>
+      <a href="families.html">الأسر المنتجة</a>
+      <a href="news.html">الأخبار</a>
+      <a href="map.html">الخريطة</a>
+      <a href="privacy.html">الخصوصية</a>
+    </div>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=11"></script>
+<script>
+const zones = [
+  {id:'park', name:'الحديقة', type:'مساحة خضراء', icon:'🌳',
+   x:30,y:25,w:170,h:115, act:{morning:180,evening:260,weekend:340}, tags:['🧺 نزهات عائلية','🎨 ورش أطفال','🏃 نادي المشي']},
+  {id:'field', name:'ملعب الحي', type:'منطقة رياضية', icon:'🏟️',
+   x:235,y:25,w:170,h:115, act:{morning:90,evening:300,weekend:390}, tags:['⚽ بطولة الناشئين','🏀 كرة السلة','🏐 دوري الحي']},
+  {id:'north', name:'الحارة الشمالية', type:'حي سكني', icon:'🏡',
+   x:440,y:25,w:170,h:115, act:{morning:120,evening:160,weekend:130}, tags:['👨‍👩‍👧 عائلات','☕ ديوانيات']},
+  {id:'market', name:'السوق', type:'تسوّق', icon:'🛒',
+   x:30,y:175,w:170,h:110, act:{morning:220,evening:340,weekend:300}, tags:['🥬 خضار طازة','🍞 مخابز','🛍️ محلات']},
+  {id:'square', name:'ميدان الحي', type:'الساحة المركزية', icon:'⛲',
+   x:235,y:175,w:170,h:110, act:{morning:150,evening:280,weekend:360}, tags:['🎪 فعاليات','🎠 ألعاب','🎤 أمسيات']},
+  {id:'school', name:'المدرسة', type:'تعليمي', icon:'🏫',
+   x:440,y:175,w:170,h:110, act:{morning:290,evening:120,weekend:80}, tags:['📚 نادي القراءة','♟️ الشطرنج','🧠 تحدي الأذكياء']},
+  {id:'mosque', name:'الجامع', type:'ديني', icon:'🕌',
+   x:30,y:320,w:170,h:110, act:{morning:200,evening:240,weekend:220}, tags:['📖 حلقة تحفيظ','🤝 مبادرات خير']},
+  {id:'food', name:'ممشى المطاعم', type:'مطاعم ومقاهي', icon:'🍽️',
+   x:235,y:320,w:170,h:110, act:{morning:110,evening:360,weekend:380}, tags:['🍔 مطاعم','☕ مقاهي','🍨 حلويات']},
+  {id:'south', name:'الحارة الجنوبية', type:'حي سكني', icon:'🏘️',
+   x:440,y:320,w:170,h:110, act:{morning:100,evening:170,weekend:150}, tags:['👩‍🍳 أسر منتجة','🧺 سوق أهلي']},
+];
+const MAXACT = 400;
+let period = 'morning', selected = 'field';
+
+function heatColor(v){
+  const t = Math.min(v/MAXACT,1);
+  const stops=[[19,78,74],[16,185,129],[251,191,36],[249,115,22],[239,68,68]];
+  const seg=t*(stops.length-1); const i=Math.min(Math.floor(seg),stops.length-2); const f=seg-i;
+  const c=stops[i].map((s,k)=>Math.round(s+(stops[i+1][k]-s)*f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function heatLabel(v){
+  const t=v/MAXACT;
+  if(t>=.8) return['نشيط جدًا','#fee2e2','#dc2626'];
+  if(t>=.5) return['نشيط','#ffedd5','#ea580c'];
+  if(t>=.32)return['متوسط','#fef9c3','#ca8a04'];
+  return['هادئ','#dcfce7','#16a34a'];
+}
+const SVGNS='http://www.w3.org/2000/svg';
+const layer=document.getElementById('zonesLayer');
+function drawMap(){
+  layer.innerHTML='';
+  zones.forEach(z=>{
+    const v=z.act[period];
+    const g=document.createElementNS(SVGNS,'g');
+    const r=document.createElementNS(SVGNS,'rect');
+    r.setAttribute('x',z.x);r.setAttribute('y',z.y);r.setAttribute('width',z.w);r.setAttribute('height',z.h);
+    r.setAttribute('rx',14);r.setAttribute('fill',heatColor(v));
+    r.setAttribute('class','zone'+(z.id===selected?' sel':''));
+    r.addEventListener('click',()=>{selected=z.id;drawMap();renderInfo();});
+    g.appendChild(r);
+    const t1=document.createElementNS(SVGNS,'text');
+    t1.setAttribute('x',z.x+z.w/2);t1.setAttribute('y',z.y+z.h/2+5);t1.setAttribute('class','zlabel');
+    t1.textContent=z.icon+' '+z.name;g.appendChild(t1);
+    layer.appendChild(g);
+  });
+}
+function renderInfo(){
+  const z=zones.find(x=>x.id===selected);const v=z.act[period];
+  const [lbl,bg,fg]=heatLabel(v);
+  ziIcon.textContent=z.icon; ziName.textContent=z.name; ziType.textContent=z.type;
+  ziBadge.textContent=lbl; ziBadge.style.background=bg; ziBadge.style.color=fg;
+  ziActive.textContent=v;
+  ziTags.innerHTML=z.tags.map(t=>`<span class="zi-tag">${t}</span>`).join('');
+}
+document.getElementById('periodTabs').addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  period=btn.dataset.p;
+  document.querySelectorAll('#periodTabs button').forEach(b=>b.classList.toggle('active',b===btn));
+  drawMap();renderInfo();
+});
+drawMap();renderInfo();
+
+const arabicNum=n=>n.toLocaleString('ar-EG');
+let liveN=1240;
+setInterval(()=>{liveN+=Math.floor(Math.random()*7)-3;if(liveN<1200)liveN=1200;if(liveN>1300)liveN=1300;
+  document.getElementById('liveTotal').textContent=arabicNum(liveN);},4000);
+</script>
+</body>
+</html>

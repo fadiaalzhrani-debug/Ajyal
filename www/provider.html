@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>لوحة المزوّد | حي أجيال</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=11" />
+<style>
+  .adm{max-width:940px;margin:0 auto;padding:24px 4%}
+  .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .adm-head h1{font-size:1.4rem}
+  .adm-head .biz{color:var(--green-700);font-weight:800}
+  .cloud-pill{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:.82rem;padding:6px 13px;border-radius:100px}
+  .cloud-on{background:#dcfce7;color:#166534}.cloud-off{background:#fef9c3;color:#854d0e}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+  .stat b{font-family:'Cairo';font-size:2rem;color:var(--green-700);display:block;line-height:1}
+  .stat span{color:var(--slate);font-size:.92rem}
+  .tablewrap{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:auto;box-shadow:var(--shadow-sm)}
+  table{width:100%;border-collapse:collapse;min-width:560px}
+  th,td{text-align:right;padding:13px 16px;border-bottom:1px solid var(--line);font-size:.94rem;white-space:nowrap}
+  th{background:#f6f9f8;color:var(--slate);font-weight:800}
+  tr:last-child td{border-bottom:none}
+  .empty{text-align:center;color:var(--slate);padding:40px}
+  .gate{max-width:380px;margin:11vh auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:var(--shadow);text-align:center}
+  .gate .logo__mark{margin:0 auto 12px}
+  .gate h2{font-size:1.3rem;margin-bottom:6px}
+  .gate p{color:var(--slate);font-size:.9rem;margin-bottom:16px}
+  .gate label{display:block;text-align:right;font-weight:700;font-size:.9rem;margin:0 0 6px}
+  .gate input{width:100%;padding:12px 15px;border:1.5px solid var(--line);border-radius:12px;font-family:'Tajawal';font-size:1.02rem;outline:none;margin-bottom:12px}
+  .gate .btn{width:100%}
+  .gate .err{color:#dc2626;font-size:.85rem;min-height:18px;margin-bottom:4px}
+  .phone-link{color:var(--green-700);font-weight:700}
+  .wa{display:inline-block;background:#25D366;color:#fff;font-weight:700;font-size:.82rem;padding:5px 12px;border-radius:100px}
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <span class="logo__mark"></span>
+  <h2>لوحة المزوّد</h2>
+  <p>ادخل باسم نشاطك لتشوف الطلبات الواصلة لك.</p>
+  <div class="err" id="gErr"></div>
+  <label>اسم نشاطك (كما يظهر في الموقع)</label>
+  <input id="gBiz" list="bizList" placeholder="مثال: أم فهد للأكل الشعبي" autocomplete="off" />
+  <datalist id="bizList">
+    <option>أم فهد للأكل الشعبي</option><option>حلا البيت</option><option>بخور الحارة</option>
+    <option>لمسات يدوية</option><option>معمول الجدّة</option><option>مؤونة البيت</option>
+    <option>شموع وعطور</option><option>توزيعات المناسبات</option>
+    <option>سباكة</option><option>كهرباء</option><option>تكييف وتبريد</option><option>تنظيف منازل</option>
+    <option>تنسيق حدائق</option><option>غسيل سيارات</option><option>دهانات وديكور</option><option>نجارة وأثاث</option><option>نقل عفش</option>
+  </datalist>
+  <label>رمز المزوّد</label>
+  <input id="gCode" type="password" placeholder="الرمز" autocomplete="off" />
+  <button class="btn btn-primary" id="gBtn">دخول</button>
+</div>
+
+<div id="panel" class="adm" style="display:none">
+  <div class="adm-head">
+    <h1>📋 طلبات <span class="biz" id="bizName"></span></h1>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="cloud-pill" id="cloudPill">…</span>
+      <button class="btn btn-ghost" id="logout" style="padding:8px 16px">خروج</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stAll">0</b><span>إجمالي طلباتك</span></div>
+    <div class="stat"><b id="stToday">0</b><span>طلبات اليوم</span></div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn btn-ghost" id="refresh" style="padding:11px 20px">↻ تحديث</button>
+  </div>
+
+  <div class="tablewrap"><table><thead>
+    <tr><th>العميل</th><th>الجوال</th><th>الطلب</th><th>تفاصيل</th><th>التاريخ</th><th>تواصل</th></tr>
+  </thead><tbody id="tbody"></tbody></table></div>
+</div>
+
+<script src="app.js?v=11"></script>
+<script>
+const PROVIDER_CODE = "ajyal2026";   // ← رمز دخول المزوّدين (غيّريه)
+const gate=document.getElementById('gate'), panel=document.getElementById('panel');
+let BIZ='', ALL=[];
+const ls=(k)=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
+const fmt=(ts)=>{ if(!ts)return '—'; const d=new Date(ts); return d.toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('ar-SA-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); };
+
+function tryEnter(){
+  const biz=(document.getElementById('gBiz').value||'').trim();
+  const code=document.getElementById('gCode').value;
+  if(!biz){ document.getElementById('gErr').textContent='اكتب اسم نشاطك'; return; }
+  if(code!==PROVIDER_CODE){ document.getElementById('gErr').textContent='رمز غير صحيح'; return; }
+  BIZ=biz; sessionStorage.setItem('ajyal_provider',biz);
+  gate.style.display='none'; panel.style.display='block';
+  document.getElementById('bizName').textContent=biz;
+  load();
+}
+document.getElementById('gBtn').addEventListener('click',tryEnter);
+document.getElementById('gCode').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
+document.getElementById('logout').addEventListener('click',()=>{sessionStorage.removeItem('ajyal_provider');location.reload();});
+document.getElementById('refresh').addEventListener('click',load);
+
+async function load(){
+  const cloud = window.AjyalCloud && window.AjyalCloud.enabled;
+  document.getElementById('cloudPill').className='cloud-pill '+(cloud?'cloud-on':'cloud-off');
+  document.getElementById('cloudPill').textContent = cloud ? '☁️ متصل بالسحابة' : '💾 وضع تجريبي';
+  let reqs = cloud ? (await window.AjyalCloud.list('requests')) : null;
+  if(!reqs) reqs = ls('hayna_requests_v1').slice().reverse();
+  ALL = reqs.filter(r => (r.item||'').includes(BIZ) || BIZ.includes(r.item||'__none__'));
+  document.getElementById('stAll').textContent=ALL.length.toLocaleString('ar-EG');
+  const today=new Date().toDateString();
+  document.getElementById('stToday').textContent=ALL.filter(r=>r.ts&&new Date(r.ts).toDateString()===today).length.toLocaleString('ar-EG');
+  const tb=document.getElementById('tbody');
+  tb.innerHTML = ALL.length ? ALL.map(r=>{
+    const ph=(r.phone||'').replace(/[^0-9]/g,'');
+    const wa = ph ? `<a class="wa" target="_blank" href="https://wa.me/966${ph.replace(/^0/,'')}">واتساب</a>` : '—';
+    return `<tr><td>${r.name||'—'}</td><td><a class="phone-link" href="tel:${r.phone||''}">${r.phone||'—'}</a></td>
+      <td>${r.action||'طلب'}</td><td>${r.extra||'—'}</td><td>${fmt(r.ts||r.created_at)}</td><td>${wa}</td></tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty">ما وصلك طلبات بعد</td></tr>';
+}
+document.addEventListener('ajyal-cloud-ready',()=>{ if(BIZ) load(); });
+
+/* دخول تلقائي إذا سبق (بعد تعريف الدوال) */
+(function(){ const b=sessionStorage.getItem('ajyal_provider'); if(b){ document.getElementById('gBiz').value=b; document.getElementById('gCode').value=PROVIDER_CODE; tryEnter(); } })();
+</script>
+</body>
+</html>

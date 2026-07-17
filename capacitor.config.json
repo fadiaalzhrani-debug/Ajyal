@@ -1,0 +1,12 @@
+{
+  "appId": "com.ajyal.app",
+  "appName": "Ajyal",
+  "webDir": "www",
+  "server": {
+    "iosScheme": "https",
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "always"
+  }
+}

@@ -1,0 +1,44 @@
+# إعداد بناء تطبيق حي أجيال على Codemagic (iOS — بدون جهاز Mac)
+# يبني ملف IPA ويرفعه لـ TestFlight / App Store تلقائيًا.
+
+workflows:
+  ios-ajyal:
+    name: Ajyal iOS (App Store)
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: CodemagicASC   # اسم مفتاح App Store Connect API المضاف في Codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.ajyal.app
+      vars:
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+        BUNDLE_ID: "com.ajyal.app"
+      node: 20
+      xcode: 15.4
+      cocoapods: default
+    scripts:
+      - name: تثبيت الحزم
+        script: npm install
+      - name: توليد الأيقونة وشاشة البداية
+        script: npx capacitor-assets generate --ios || true
+      - name: إضافة ومزامنة منصة iOS
+        script: |
+          [ -d ios ] || npx cap add ios
+          npx cap sync ios
+      - name: إعداد التوقيع (Provisioning)
+        script: xcode-project use-profiles
+      - name: بناء ملف IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true    # يرفعه لـ TestFlight للتجربة قبل النشر

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>لوحة تحكم حي أجيال</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=11" />
+<style>
+  .adm{max-width:1080px;margin:0 auto;padding:24px 4%}
+  .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .adm-head h1{font-size:1.5rem}
+  .cloud-pill{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:.85rem;padding:7px 14px;border-radius:100px}
+  .cloud-on{background:#dcfce7;color:#166534}.cloud-off{background:#fef9c3;color:#854d0e}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+  .stat b{font-family:'Cairo';font-size:2rem;color:var(--green-700);display:block;line-height:1}
+  .stat span{color:var(--slate);font-size:.92rem}
+  .tabs{display:flex;gap:6px;background:#eef3f1;padding:5px;border-radius:12px;width:fit-content;margin-bottom:16px}
+  .tabs button{border:none;background:none;font-family:'Tajawal';font-weight:800;font-size:.95rem;padding:9px 20px;border-radius:9px;cursor:pointer;color:var(--slate)}
+  .tabs button.active{background:#fff;color:var(--green-700);box-shadow:var(--shadow-sm)}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .toolbar input{flex:1;min-width:200px;padding:11px 14px;border:1.5px solid var(--line);border-radius:11px;font-family:'Tajawal';font-size:1rem;outline:none}
+  .toolbar input:focus{border-color:var(--green-500)}
+  .tablewrap{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:auto;box-shadow:var(--shadow-sm)}
+  table{width:100%;border-collapse:collapse;min-width:620px}
+  th,td{text-align:right;padding:13px 16px;border-bottom:1px solid var(--line);font-size:.94rem;white-space:nowrap}
+  th{background:#f6f9f8;color:var(--slate);font-weight:800;position:sticky;top:0}
+  td{color:var(--ink)}
+  tr:last-child td{border-bottom:none}
+  .empty{text-align:center;color:var(--slate);padding:40px}
+  .gate{max-width:360px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:var(--shadow);text-align:center}
+  .gate .logo__mark{margin:0 auto 12px}
+  .gate h2{font-size:1.3rem;margin-bottom:6px}
+  .gate p{color:var(--slate);font-size:.92rem;margin-bottom:16px}
+  .gate input{width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;font-family:'Tajawal';font-size:1.05rem;text-align:center;outline:none;margin-bottom:12px}
+  .gate .btn{width:100%}
+  .gate .err{color:#dc2626;font-size:.85rem;min-height:18px;margin-bottom:6px}
+  .phone-link{color:var(--green-700);font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- بوابة دخول بسيطة (تجريبية) -->
+<div id="gate" class="gate">
+  <span class="logo__mark"></span>
+  <h2>لوحة تحكم أجيال</h2>
+  <p>أدخل رمز الدخول للوحة الإدارة.</p>
+  <div class="err" id="gErr"></div>
+  <input id="gCode" type="password" placeholder="رمز الدخول" autocomplete="off" />
+  <button class="btn btn-primary" id="gBtn">دخول</button>
+</div>
+
+<!-- اللوحة -->
+<div id="panel" class="adm" style="display:none">
+  <div class="adm-head">
+    <h1>🗂️ لوحة تحكم حي أجيال</h1>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="cloud-pill" id="cloudPill">…</span>
+      <a href="index.html" class="btn btn-ghost" style="padding:9px 18px">← الموقع</a>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stReq">0</b><span>طلب / حجز</span></div>
+    <div class="stat"><b id="stReg">0</b><span>تسجيل مسابقة</span></div>
+    <div class="stat"><b id="stToday">0</b><span>طلبات اليوم</span></div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button data-t="req" class="active">الطلبات والحجوزات</button>
+    <button data-t="reg">تسجيلات المسابقات</button>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="ابحث بالاسم أو الجوال أو الخدمة…" />
+    <button class="btn btn-ghost" id="refresh" style="padding:11px 20px">↻ تحديث</button>
+    <button class="btn btn-primary" id="export" style="padding:11px 20px">⬇ تصدير CSV</button>
+  </div>
+
+  <div class="tablewrap"><table id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+</div>
+
+<script src="app.js?v=11"></script>
+<script>
+/* ====== بوابة الدخول (تجريبية — للحماية الحقيقية نستخدم تسجيل Supabase) ====== */
+const ADMIN_CODE = "ajyal2026";   // ← غيّري رمز الدخول من هنا
+const gate=document.getElementById('gate'), panel=document.getElementById('panel');
+function tryEnter(){
+  if(document.getElementById('gCode').value===ADMIN_CODE || sessionStorage.getItem('ajyal_admin')==='1'){
+    sessionStorage.setItem('ajyal_admin','1'); gate.style.display='none'; panel.style.display='block'; load();
+  } else { document.getElementById('gErr').textContent='رمز غير صحيح'; }
+}
+document.getElementById('gBtn').addEventListener('click',tryEnter);
+document.getElementById('gCode').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
+
+/* ====== البيانات ====== */
+let current='req', REQ=[], REG=[];
+const ls=(k)=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
+const fmt=(ts)=>{ if(!ts)return '—'; const d=new Date(ts); return d.toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('ar-SA-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); };
+
+async function load(){
+  const cloud = window.AjyalCloud && window.AjyalCloud.enabled;
+  document.getElementById('cloudPill').className='cloud-pill '+(cloud?'cloud-on':'cloud-off');
+  document.getElementById('cloudPill').textContent = cloud ? '☁️ متصل بالسحابة' : '💾 وضع تجريبي (هذا الجهاز)';
+  if(cloud){
+    REQ = (await window.AjyalCloud.list('requests')) || ls('hayna_requests_v1');
+    REG = (await window.AjyalCloud.list('registrations')) || ls('hayna_regs_v1');
+  } else {
+    REQ = ls('hayna_requests_v1').slice().reverse();
+    REG = ls('hayna_regs_v1').slice().reverse();
+  }
+  stats(); render();
+}
+function stats(){
+  document.getElementById('stReq').textContent=REQ.length.toLocaleString('ar-EG');
+  document.getElementById('stReg').textContent=REG.length.toLocaleString('ar-EG');
+  const today=new Date().toDateString();
+  const t=REQ.filter(r=>r.ts && new Date(r.ts).toDateString()===today).length;
+  document.getElementById('stToday').textContent=t.toLocaleString('ar-EG');
+}
+function render(){
+  const q=(document.getElementById('search').value||'').trim().toLowerCase();
+  const thead=document.getElementById('thead'), tbody=document.getElementById('tbody');
+  let rows='';
+  if(current==='req'){
+    thead.innerHTML='<tr><th>النوع</th><th>الجهة</th><th>الاسم</th><th>الجوال</th><th>تفاصيل</th><th>التاريخ</th></tr>';
+    const list=REQ.filter(r=>!q||JSON.stringify(r).toLowerCase().includes(q));
+    rows=list.map(r=>`<tr><td>${r.action||'طلب'}</td><td>${r.item||'—'}</td><td>${r.name||'—'}</td>
+      <td><a class="phone-link" href="tel:${r.phone||''}">${r.phone||'—'}</a></td><td>${r.extra||'—'}</td><td>${fmt(r.ts||r.created_at)}</td></tr>`).join('');
+  } else {
+    thead.innerHTML='<tr><th>المشارك</th><th>العمر</th><th>المسابقة</th><th>جوال ولي الأمر</th><th>التاريخ</th></tr>';
+    const list=REG.filter(r=>!q||JSON.stringify(r).toLowerCase().includes(q));
+    rows=list.map(r=>`<tr><td>${r.name||'—'}</td><td>${r.age||'—'}</td><td>${r.comp||'—'}</td>
+      <td><a class="phone-link" href="tel:${r.phone||''}">${r.phone||'—'}</a></td><td>${fmt(r.ts||r.created_at)}</td></tr>`).join('');
+  }
+  tbody.innerHTML = rows || '<tr><td colspan="6" class="empty">لا توجد بيانات بعد</td></tr>';
+}
+document.getElementById('tabs').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  current=b.dataset.t;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+});
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('refresh').addEventListener('click',load);
+document.getElementById('export').addEventListener('click',()=>{
+  const data = current==='req'?REQ:REG;
+  if(!data.length){ toast('لا توجد بيانات للتصدير'); return; }
+  const keys=[...new Set(data.flatMap(o=>Object.keys(o)))];
+  const csv=[keys.join(',')].concat(data.map(o=>keys.map(k=>`"${(o[k]??'').toString().replace(/"/g,'""')}"`).join(','))).join('\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='ajyal-'+current+'-'+Date.now()+'.csv';a.click();
+});
+document.addEventListener('ajyal-cloud-ready',load);
+
+/* دخول تلقائي إذا سبق تسجيل الدخول (بعد تعريف كل الدوال) */
+if(sessionStorage.getItem('ajyal_admin')==='1') tryEnter();
+</script>
+</body>
+</html>

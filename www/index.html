@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>حي أجيال | اختر ما تريد</title>
+<meta name="description" content="حي أجيال — منصة الحي الواحد. اختر ما تريد: مطاعم، فعاليات، مسابقات، خدمات، أسر منتجة، أخبار، وخريطة نشاط الحي." />
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=11" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+</head>
+<body>
+
+<section class="home-hero">
+  <div class="container">
+    <span class="hero-eyebrow">📍 حي أجيال السكني · الظهران</span>
+    <h1>أهلًا بك في <span class="hl">حي أجيال</span></h1>
+    <img src="ajyal.png?v=2" alt="حي أجيال" class="hero-logo" />
+    <p class="hero-sub">كل خدمات حيّك في مكان واحد — اختر وجهتك من الأسفل.</p>
+    <div class="date" id="todayDate"></div>
+  </div>
+</section>
+
+<section class="options" id="options">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">خدمات الحي</span>
+      <h2>وش تحتاج اليوم؟</h2>
+    </div>
+    <div class="options__grid">
+
+      <a href="restaurants.html" class="opt o-food reveal">
+        <div class="ic">🍽️</div>
+        <h3>مطاعم الحي</h3>
+        <p>أفضل المطاعم والمقاهي — اطلب توصيل أو احجز.</p>
+        <span class="go">افتح <i>←</i></span>
+      </a>
+
+      <a href="events.html" class="opt o-events reveal">
+        <span class="badge">جديد</span>
+        <div class="ic">🎉</div>
+        <h3>فعاليات الحي</h3>
+        <p>فعاليات وأنشطة ومسابقات الحي — سجّل حضورك ومشاركتك.</p>
+        <span class="go">افتح <i>←</i></span>
+      </a>
+
+      <a href="https://www.snapchat.com/add/ajyal" data-snap target="_blank" rel="noopener" class="opt o-snap reveal">
+        <span class="badge">تابعنا</span>
+        <div class="ic">👻</div>
+        <h3>سناب أجيال</h3>
+        <p>تابع جديد الحي وفعالياته ولحظاته أول بأول على سناب شات.</p>
+        <span class="go">تابعنا <i>←</i></span>
+      </a>
+
+      <a href="services.html" class="opt o-serv reveal">
+        <div class="ic">🛠️</div>
+        <h3>طلب خدمة</h3>
+        <p>سباكة، كهرباء، تكييف، تنظيف — احجز بسهولة.</p>
+        <span class="go">افتح <i>←</i></span>
+      </a>
+
+      <a href="families.html" class="opt o-fam reveal">
+        <div class="ic">👩‍🍳</div>
+        <h3>الأسر المنتجة</h3>
+        <p>أكل بيتي وحلويات وحرف من بيوت الحي.</p>
+        <span class="go">افتح <i>←</i></span>
+      </a>
+
+      <a href="news.html" class="opt o-news reveal">
+        <div class="ic">📣</div>
+        <h3>أخبار الحي</h3>
+        <p>كل جديد ومعلومة تهم أهل الحي، أول بأول.</p>
+        <span class="go">افتح <i>←</i></span>
+      </a>
+
+    </div>
+
+    <!-- الخريطة المميزة -->
+    <div class="map-feature reveal">
+      <a href="map.html">
+        <div>
+          <h3>🗺️ خريطة نشاط الحي</h3>
+          <p>شاهد أنشط مناطق الحي بالألوان حسب الوقت — من الملعب إلى السوق إلى الحديقة.</p>
+          <span class="go">افتح الخريطة ←</span>
+        </div>
+        <div class="mini-map">🗺️</div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-links">
+      <a href="restaurants.html">المطاعم</a>
+      <a href="events.html">الفعاليات</a>
+      <a href="events.html#comp">المسابقات</a>
+      <a href="services.html">الخدمات</a>
+      <a href="families.html">الأسر المنتجة</a>
+      <a href="news.html">الأخبار</a>
+      <a href="map.html">الخريطة</a>
+      <a href="privacy.html">الخصوصية</a>
+    </div>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=11"></script>
+</body>
+</html>
