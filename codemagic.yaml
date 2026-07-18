@@ -16,7 +16,7 @@ workflows:
         - appstore
       vars:
         BUNDLE_ID: "com.ajyal.app"
-        APP_STORE_CONNECT_ISSUER_ID: "f9ed6701-be13-4103-8587-470ab207b7bc"
+        APP_STORE_CONNECT_ISSUER_ID: "c8177bdf-152c-4e0a-919d-995fee072643"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "7D3PBVHH97"
       node: 20.19.0
       xcode: latest
