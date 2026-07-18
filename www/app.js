@@ -22,7 +22,7 @@ window.AjyalCloud = { enabled:false, insert:async()=>{}, list:async()=>null };
     window.AjyalCloud = {
       enabled:true,
       insert:async(t,r)=>{ try{ await sb.from(t).insert(r); }catch(e){} },
-      list:async(t)=>{ try{ const {data}=await sb.from(t).select('*').order('created_at',{ascending:false}); return data||[]; }catch(e){ return null; } }
+      list:async(t)=>{ try{ const {data,error}=await sb.from(t).select('*').order('created_at',{ascending:false}); if(error) return null; return data||[]; }catch(e){ return null; } }
     };
     document.dispatchEvent(new Event('ajyal-cloud-ready'));
   }catch(e){}

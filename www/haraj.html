@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>حراج الحي | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=13" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  body{padding-bottom:86px}
+  .hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .hcard{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;
+    box-shadow:var(--shadow-sm);transition:.2s}
+  .hcard:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+  .hcard__img{width:64px;height:64px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:2rem;background:var(--green-50)}
+  .hcard__b{flex:1;min-width:0;display:flex;flex-direction:column}
+  .hcard__t{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .hcard__t h3{font-size:1.05rem}
+  .price{font-family:'Cairo';font-weight:800;font-size:.95rem;color:var(--amber-600);white-space:nowrap}
+  .price.free{color:var(--green-600)}
+  .hcard p{color:var(--slate);font-size:.88rem;margin:3px 0 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hcard__f{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .hcard__f .by{color:var(--muted);font-size:.8rem}
+  .hcard .wa{background:#25D366;color:#fff;font-weight:700;font-size:.82rem;padding:6px 14px;border-radius:100px;display:inline-flex;gap:5px}
+  .haraj-bar{position:fixed;bottom:0;inset-inline:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);display:flex;justify-content:center;gap:6px;padding:8px 10px;z-index:60;box-shadow:0 -8px 24px rgba(6,78,59,.10)}
+  .haraj-bar button{flex:1;max-width:150px;border:none;background:none;font-family:'Tajawal';font-weight:800;font-size:.9rem;
+    padding:9px 6px;border-radius:13px;color:var(--slate);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.2s}
+  .haraj-bar button .i{font-size:1.3rem;line-height:1}
+  .haraj-bar button.active{background:var(--green-50);color:var(--green-700)}
+  .haraj-bar .add{background:var(--green-700);color:#fff;max-width:150px}
+  .haraj-bar .add.active{background:var(--green-700);color:#fff}
+  .no-results{text-align:center;color:var(--slate);font-weight:600;padding:36px;background:#fff;border:1px dashed var(--line);border-radius:16px}
+  /* نافذة الإضافة */
+  .mbd{position:fixed;inset:0;background:rgba(4,36,27,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:80;padding:18px}
+  .mbd.open{display:flex}
+  .mdl{background:#fff;border-radius:20px;max-width:440px;width:100%;padding:24px;box-shadow:var(--shadow-lg);max-height:92vh;overflow:auto}
+  .mdl h3{font-size:1.3rem;margin-bottom:14px}
+  .type-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .type-pick label{cursor:pointer;text-align:center;padding:13px;border:2px solid var(--line);border-radius:14px;font-weight:800}
+  .type-pick input{display:none}
+  .type-pick label:has(input:checked){border-color:var(--green-500);background:var(--green-50);color:var(--green-700)}
+  .mdl .btn{width:100%;margin-top:6px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › حراج الحي</nav>
+    <h1>🛒 حراج الحي</h1>
+    <p>بيع واشترِ من جيرانك، أو أعطِ ما لا تحتاجه مجانًا لأهل الحي.</p>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="container">
+    <div class="hgrid" id="grid"></div>
+    <div class="no-results" id="nores" style="display:none">ما فيه إعلانات في هذا القسم بعد — كن أول من يضيف!</div>
+  </div>
+</section>
+
+<!-- الشريط السفلي -->
+<nav class="haraj-bar">
+  <button data-f="all" class="active"><span class="i">🗂️</span>الكل</button>
+  <button data-f="sale"><span class="i">🏷️</span>للبيع</button>
+  <button data-f="free"><span class="i">🎁</span>مجانًا</button>
+  <button class="add" id="addBtn"><span class="i">➕</span>أضف إعلان</button>
+</nav>
+
+<!-- نافذة إضافة إعلان -->
+<div class="mbd" id="modal">
+  <form class="mdl" id="hForm">
+    <h3>➕ أضف إعلان</h3>
+    <div class="type-pick">
+      <label><input type="radio" name="type" value="sale" checked>🏷️ للبيع</label>
+      <label><input type="radio" name="type" value="free">🎁 مجانًا</label>
+    </div>
+    <div class="field"><label>عنوان الإعلان</label><input id="hTitle" required placeholder="مثال: كنب مستعمل نظيف"></div>
+    <div class="field" id="priceField"><label>السعر (ريال)</label><input id="hPrice" type="number" min="0" placeholder="مثال: 400"></div>
+    <div class="field"><label>الوصف</label><input id="hDesc" placeholder="وصف مختصر للحالة والتفاصيل"></div>
+    <div class="field"><label>رقم جوالك</label><input id="hPhone" type="tel" required placeholder="05xxxxxxxx"></div>
+    <button type="submit" class="btn btn-primary">نشر الإعلان</button>
+    <button type="button" class="btn btn-ghost" data-close style="width:100%;margin-top:8px">إلغاء</button>
+  </form>
+</div>
+
+<footer style="margin-bottom:70px">
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=13"></script>
+<script>
+const HK='hayna_haraj_v1';
+const ls=()=>{try{return JSON.parse(localStorage.getItem(HK))||[]}catch(e){return[]}};
+const catEmoji={'أثاث':'🛋️','إلكترونيات':'📱','ملابس':'👕','أطفال':'🧸','سيارات':'🚗','أخرى':'📦'};
+const SAMPLES=[
+  {type:'sale', title:'كنب مستعمل نظيف', price:400, descr:'٣ مقاعد، لون بيج، حالة ممتازة', name:'أبو محمد', phone:'0551000001', emoji:'🛋️', ts:Date.now()-3600e3},
+  {type:'sale', title:'جوال آيفون ١٣', price:1200, descr:'بطارية ٩٠٪، مع العلبة', name:'فهد', phone:'0551000002', emoji:'📱', ts:Date.now()-7200e3},
+  {type:'sale', title:'دراجة أطفال', price:150, descr:'مقاس ١٦، شبه جديدة', name:'أم سعد', phone:'0551000003', emoji:'🚲', ts:Date.now()-9000e3},
+  {type:'free', title:'كراتين نقل عفش', price:0, descr:'حوالي ٢٠ كرتون نظيف', name:'خالد', phone:'0551000004', emoji:'📦', ts:Date.now()-5400e3},
+  {type:'free', title:'ملابس أطفال', price:0, descr:'عمر ٢-٤ سنوات، نظيفة', name:'أم نورة', phone:'0551000005', emoji:'👕', ts:Date.now()-10800e3},
+  {type:'free', title:'نباتات زينة', price:0, descr:'٣ أصص، تحتاج ريّ', name:'سارة', phone:'0551000006', emoji:'🪴', ts:Date.now()-12600e3}
+];
+let filter='all', DATA=[];
+
+async function load(){
+  let user=null;
+  if(window.AjyalCloud && window.AjyalCloud.enabled){
+    const reqs = await window.AjyalCloud.list('requests');
+    if(reqs) user = reqs.filter(r=>r.action==='haraj').map(r=>{
+      let x={}; try{ x=JSON.parse(r.extra||'{}'); }catch(e){}
+      return { type:x.type||'sale', title:r.item||'إعلان', price:x.price||0, descr:x.descr||'',
+        emoji:x.emoji||'📦', name:r.name||'جار الحي', phone:r.phone||'', ts:r.ts||Date.parse(r.created_at)||0 };
+    });
+  }
+  if(!user) user = ls().slice().reverse();
+  DATA = [...user, ...SAMPLES];
+  render();
+}
+function render(){
+  const list = DATA.filter(x=> filter==='all' || x.type===filter);
+  const g=document.getElementById('grid');
+  g.innerHTML = list.map(x=>{
+    const ph=(x.phone||'').replace(/[^0-9]/g,'');
+    const wa = ph?`https://wa.me/966${ph.replace(/^0/,'')}`:'#';
+    const price = x.type==='free' ? '<span class="price free">مجاني 🎁</span>' : `<span class="price">${Number(x.price||0).toLocaleString('ar-EG')} ﷼</span>`;
+    return `<article class="hcard">
+      <div class="hcard__img">${x.emoji||'📦'}</div>
+      <div class="hcard__b">
+        <div class="hcard__t"><h3>${x.title||'إعلان'}</h3>${price}</div>
+        <p>${x.descr||''}</p>
+        <div class="hcard__f"><span class="by">👤 ${x.name||'جار'}</span>
+          <a class="wa" target="_blank" href="${wa}">💬 تواصل</a></div>
+      </div>
+    </article>`;
+  }).join('');
+  document.getElementById('nores').style.display = list.length ? 'none' : 'block';
+}
+
+/* الشريط السفلي */
+document.querySelector('.haraj-bar').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-f]'); if(!b) return;
+  filter=b.dataset.f;
+  document.querySelectorAll('.haraj-bar button[data-f]').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+});
+
+/* نافذة الإضافة */
+const modal=document.getElementById('modal');
+document.getElementById('addBtn').addEventListener('click',e=>{ e.stopPropagation(); modal.classList.add('open'); });
+modal.addEventListener('click',e=>{ if(e.target===modal||e.target.closest('[data-close]')) modal.classList.remove('open'); });
+document.querySelectorAll('input[name=type]').forEach(r=>r.addEventListener('change',()=>{
+  document.getElementById('priceField').style.display = document.querySelector('input[name=type]:checked').value==='free' ? 'none':'block';
+}));
+document.getElementById('hForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const type=document.querySelector('input[name=type]:checked').value;
+  const rec={ type, title:hTitle.value.trim(), price: type==='free'?0:Number(hPrice.value||0),
+    descr:hDesc.value.trim(), name:'جار الحي', phone:hPhone.value.trim(), emoji:type==='free'?'🎁':'🏷️', ts:Date.now() };
+  const all=ls(); all.push(rec); localStorage.setItem(HK,JSON.stringify(all));
+  if(window.AjyalCloud) window.AjyalCloud.insert('requests', { action:'haraj', item:rec.title, name:rec.name,
+    phone:rec.phone, extra:JSON.stringify({type:rec.type, price:rec.price, descr:rec.descr, emoji:rec.emoji}), ts:rec.ts });
+  modal.classList.remove('open'); e.target.reset();
+  document.getElementById('priceField').style.display='block';
+  toast('✓ تم نشر إعلانك في حراج الحي');
+  load();
+});
+document.addEventListener('ajyal-cloud-ready',load);
+load();
+</script>
+</body>
+</html>

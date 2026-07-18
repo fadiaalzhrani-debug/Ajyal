@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=11" />
+<link rel="stylesheet" href="styles.css?v=13" />
 <style>
   .adm{max-width:1080px;margin:0 auto;padding:24px 4%}
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
@@ -85,7 +85,7 @@
   <div class="tablewrap"><table id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
 </div>
 
-<script src="app.js?v=11"></script>
+<script src="app.js?v=13"></script>
 <script>
 /* ====== بوابة الدخول (تجريبية — للحماية الحقيقية نستخدم تسجيل Supabase) ====== */
 const ADMIN_CODE = "ajyal2026";   // ← غيّري رمز الدخول من هنا
@@ -114,6 +114,7 @@ async function load(){
     REQ = ls('hayna_requests_v1').slice().reverse();
     REG = ls('hayna_regs_v1').slice().reverse();
   }
+  REQ = (REQ||[]).filter(r=>r.action!=='haraj');   // إعلانات الحراج تُعرض في صفحة الحراج مو هنا
   stats(); render();
 }
 function stats(){
