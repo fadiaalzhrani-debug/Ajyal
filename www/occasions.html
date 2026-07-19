@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>تهاني ومناسبات الحي | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=15" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  body{padding-bottom:86px}
+  .ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .occ-card{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;
+    box-shadow:var(--shadow-sm);transition:.2s;position:relative;overflow:hidden}
+  .occ-card::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:5px;background:var(--k,#fb7185)}
+  .occ-card:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+  .occ-ic{width:60px;height:60px;flex:none;border-radius:16px;display:grid;place-items:center;font-size:1.9rem;background:var(--ks,#ffe9ee)}
+  .occ-b{flex:1;min-width:0;display:flex;flex-direction:column}
+  .occ-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .occ-tag{font-family:'Cairo';font-weight:800;font-size:.78rem;padding:3px 11px;border-radius:100px;background:var(--ks,#ffe9ee);color:var(--ki,#be123c)}
+  .occ-top time{color:var(--muted);font-size:.78rem;margin-inline-start:auto}
+  .occ-b h3{font-size:1.08rem;line-height:1.35;margin-bottom:3px}
+  .occ-msg{color:var(--slate);font-size:.9rem;line-height:1.6;margin-bottom:10px}
+  .occ-by{color:var(--muted);font-size:.8rem;margin-bottom:10px}
+  .occ-react{margin-top:auto;align-self:flex-start;border:1.5px solid var(--line);background:#fff;cursor:pointer;
+    font-family:'Tajawal';font-weight:800;font-size:.86rem;color:var(--slate);padding:7px 15px;border-radius:100px;
+    display:inline-flex;align-items:center;gap:7px;transition:.18s}
+  .occ-react b{color:var(--ki,#be123c)}
+  .occ-react:hover{border-color:var(--k,#fb7185)}
+  .occ-react.done{background:var(--ks,#ffe9ee);border-color:transparent;color:var(--ki,#be123c);transform:scale(1.02)}
+  .occ-react .rx{font-size:1.05rem;line-height:1}
+  /* الشريط السفلي */
+  .occ-bar{position:fixed;bottom:0;inset-inline:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);display:flex;justify-content:center;gap:6px;padding:8px 10px;z-index:60;box-shadow:0 -8px 24px rgba(6,78,59,.10)}
+  .occ-bar button{flex:1;max-width:150px;border:none;background:none;font-family:'Tajawal';font-weight:800;font-size:.9rem;
+    padding:9px 6px;border-radius:13px;color:var(--slate);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.2s}
+  .occ-bar button .i{font-size:1.3rem;line-height:1}
+  .occ-bar button.active{background:var(--green-50);color:var(--green-700)}
+  .occ-bar .add{background:var(--green-700);color:#fff;max-width:150px}
+  .no-results{text-align:center;color:var(--slate);font-weight:600;padding:36px;background:#fff;border:1px dashed var(--line);border-radius:16px}
+  /* نافذة الإضافة */
+  .mbd{position:fixed;inset:0;background:rgba(4,36,27,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:80;padding:18px}
+  .mbd.open{display:flex}
+  .mdl{background:#fff;border-radius:20px;max-width:440px;width:100%;padding:24px;box-shadow:var(--shadow-lg);max-height:92vh;overflow:auto}
+  .mdl h3{font-size:1.3rem;margin-bottom:14px}
+  .type-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .type-pick label{cursor:pointer;text-align:center;padding:12px 8px;border:2px solid var(--line);border-radius:14px;font-weight:800;font-size:.95rem}
+  .type-pick input{display:none}
+  .type-pick label:has(input:checked){border-color:var(--green-500);background:var(--green-50);color:var(--green-700)}
+  .mdl .btn{width:100%;margin-top:6px}
+  .mdl .hint{color:var(--muted);font-size:.82rem;margin:-8px 0 14px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › تهاني ومناسبات الحي</nav>
+    <h1>🎊 تهاني ومناسبات الحي</h1>
+    <p>شارك فرحتك مع جيرانك — مولود، زواج، أو تخرّج — وشاركهم التعازي. لوحة تجمع أهل الحي.</p>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="container">
+    <div class="ogrid" id="grid"></div>
+    <div class="no-results" id="nores" style="display:none">ما فيه مناسبات في هذا القسم بعد — كن أول من يشارك!</div>
+  </div>
+</section>
+
+<!-- الشريط السفلي -->
+<nav class="occ-bar">
+  <button data-f="all" class="active"><span class="i">🗂️</span>الكل</button>
+  <button data-f="happy"><span class="i">🎉</span>أفراح</button>
+  <button data-f="cond"><span class="i">🤲</span>تعازي</button>
+  <button class="add" id="addBtn"><span class="i">➕</span>شارك مناسبة</button>
+</nav>
+
+<!-- نافذة إضافة مناسبة -->
+<div class="mbd" id="modal">
+  <form class="mdl" id="oForm">
+    <h3>🎊 شارك مناسبة</h3>
+    <div class="type-pick">
+      <label><input type="radio" name="kind" value="birth" checked>👶 مولود</label>
+      <label><input type="radio" name="kind" value="wedding">💍 زواج</label>
+      <label><input type="radio" name="kind" value="grad">🎓 تخرّج</label>
+      <label><input type="radio" name="kind" value="cond">🤲 تعزية</label>
+    </div>
+    <div class="field"><label>المناسبة لمن؟</label><input id="oWho" required placeholder="مثال: آل فهد / أبو محمد / نورة"></div>
+    <div class="field"><label>كلمة أو دعاء (اختياري)</label><input id="oMsg" placeholder="مثال: اللهم اجعله من الذرية الصالحة"></div>
+    <div class="field"><label>اسمك (اختياري)</label><input id="oName" placeholder="يظهر: من جارك …"></div>
+    <p class="hint">تظهر مناسبتك لكل أهل الحي — بدون أرقام أو معلومات خاصة.</p>
+    <button type="submit" class="btn btn-primary">نشر المناسبة</button>
+    <button type="button" class="btn btn-ghost" data-close style="width:100%;margin-top:8px">إلغاء</button>
+  </form>
+</div>
+
+<footer style="margin-bottom:70px">
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=15"></script>
+<script>
+const OK='hayna_occasions_v1', RK='hayna_occ_reacts_v1';
+const ls=()=>{try{return JSON.parse(localStorage.getItem(OK))||[]}catch(e){return[]}};
+const reacted=()=>{try{return JSON.parse(localStorage.getItem(RK))||[]}catch(e){return[]}};
+const KINDS={
+  birth:  {group:'happy', tag:'مولود جديد', emoji:'👶', k:'#38bdf8', ks:'#e6f5ff', ki:'#0369a1', def:'مبروك المولود، اللهم اجعله من الذرية الصالحة', rx:'🎉 مبارك'},
+  wedding:{group:'happy', tag:'زواج',       emoji:'💍', k:'#fb7185', ks:'#ffe9ee', ki:'#be123c', def:'بالرفاء والبنين، ألف مبروك', rx:'🎉 مبارك'},
+  grad:   {group:'happy', tag:'تخرّج',      emoji:'🎓', k:'#f59e0b', ks:'#fff3df', ki:'#b45309', def:'مبروك التخرّج، وعقبال ما بعده بإذن الله', rx:'🎉 مبارك'},
+  cond:   {group:'cond',  tag:'تعزية',      emoji:'🤲', k:'#94a3b8', ks:'#eef1f4', ki:'#475569', def:'إنا لله وإنا إليه راجعون، أحسن الله عزاءكم', rx:'🤲 أحسن الله عزاكم'}
+};
+const SAMPLES=[
+  {id:'s1', kind:'birth',   who:'آل فهد',        msg:'', name:'أم محمد', ts:Date.now()-2*3600e3,  rx:14},
+  {id:'s2', kind:'wedding', who:'أبو نايف',      msg:'', name:'جارك سعد', ts:Date.now()-6*3600e3, rx:26},
+  {id:'s3', kind:'grad',    who:'نورة العتيبي',  msg:'مبروك التخرّج يا دكتورة، فخورين فيك', name:'', ts:Date.now()-22*3600e3, rx:38},
+  {id:'s4', kind:'cond',    who:'آل مبارك',      msg:'', name:'', ts:Date.now()-3*3600e3, rx:41},
+  {id:'s5', kind:'birth',   who:'آل خالد',       msg:'', name:'أبو ريان', ts:Date.now()-30*3600e3, rx:9}
+];
+let filter='all', DATA=[];
+
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<3600) return 'قبل '+Math.max(1,Math.floor(s/60))+' دقيقة';
+  if(s<86400) return 'قبل '+Math.floor(s/3600)+' ساعة';
+  return 'قبل '+Math.floor(s/86400)+' يوم';
+}
+
+async function load(){
+  let user=null;
+  if(window.AjyalCloud && window.AjyalCloud.enabled){
+    const reqs = await window.AjyalCloud.list('requests');
+    if(reqs) user = reqs.filter(r=>r.action==='occasion').map(r=>{
+      let x={}; try{ x=JSON.parse(r.extra||'{}'); }catch(e){}
+      return { id:'c'+(r.ts||r.created_at||Math.random()), kind:KINDS[x.kind]?x.kind:'birth', who:r.item||'أحد الجيران',
+        msg:x.msg||'', name:r.name||'', ts:r.ts||Date.parse(r.created_at)||Date.now(), rx:x.rx||0 };
+    });
+  }
+  if(!user) user = ls().slice().reverse();
+  DATA = [...user, ...SAMPLES];
+  render();
+}
+function render(){
+  const rx=reacted();
+  const list = DATA.filter(x=> filter==='all' || KINDS[x.kind].group===filter);
+  const g=document.getElementById('grid');
+  g.innerHTML = list.map(x=>{
+    const K=KINDS[x.kind];
+    const msg = x.msg && x.msg.trim() ? x.msg : K.def;
+    const by = x.name && x.name.trim() ? '<div class="occ-by">— من جارك '+x.name+'</div>' : '';
+    const did = rx.includes(x.id);
+    const count = (x.rx||0) + (did?1:0);
+    return `<article class="occ-card" style="--k:${K.k};--ks:${K.ks};--ki:${K.ki}">
+      <div class="occ-ic">${K.emoji}</div>
+      <div class="occ-b">
+        <div class="occ-top"><span class="occ-tag">${K.tag}</span><time>${timeAgo(x.ts)}</time></div>
+        <h3>${K.tag} · ${x.who}</h3>
+        <p class="occ-msg">«${msg}»</p>
+        ${by}
+        <button class="occ-react${did?' done':''}" data-id="${x.id}" ${did?'disabled':''}>
+          <span class="rx">${K.rx.split(' ')[0]}</span> ${K.rx.split(' ').slice(1).join(' ')} <b>${count.toLocaleString('ar-EG')}</b></button>
+      </div>
+    </article>`;
+  }).join('');
+  document.getElementById('nores').style.display = list.length ? 'none' : 'block';
+}
+
+/* التفاعل (بارك / تعزية) — محلي */
+document.getElementById('grid').addEventListener('click',e=>{
+  const b=e.target.closest('.occ-react'); if(!b||b.disabled) return;
+  const id=b.dataset.id; const rx=reacted();
+  if(!rx.includes(id)){ rx.push(id); localStorage.setItem(RK,JSON.stringify(rx)); }
+  render();
+  toast('🤍 وصلت مباركتك لأهل الحي');
+});
+
+/* الشريط السفلي */
+document.querySelector('.occ-bar').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-f]'); if(!b) return;
+  filter=b.dataset.f;
+  document.querySelectorAll('.occ-bar button[data-f]').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+});
+
+/* نافذة الإضافة */
+const modal=document.getElementById('modal');
+document.getElementById('addBtn').addEventListener('click',e=>{ e.stopPropagation(); modal.classList.add('open'); });
+modal.addEventListener('click',e=>{ if(e.target===modal||e.target.closest('[data-close]')) modal.classList.remove('open'); });
+document.getElementById('oForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const kind=document.querySelector('input[name=kind]:checked').value;
+  const rec={ id:'u'+Date.now(), kind, who:document.getElementById('oWho').value.trim(),
+    msg:document.getElementById('oMsg').value.trim(), name:document.getElementById('oName').value.trim(), ts:Date.now(), rx:0 };
+  const all=ls(); all.push(rec); localStorage.setItem(OK,JSON.stringify(all));
+  if(window.AjyalCloud) window.AjyalCloud.insert('requests', { action:'occasion', item:rec.who, name:rec.name,
+    phone:'', extra:JSON.stringify({kind:rec.kind, msg:rec.msg, rx:0}), ts:rec.ts });
+  modal.classList.remove('open'); e.target.reset();
+  toast('✓ تم نشر مناسبتك — مبارك لأهل الحي');
+  load();
+});
+document.addEventListener('ajyal-cloud-ready',load);
+load();
+</script>
+</body>
+</html>
