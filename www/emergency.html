@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>الطوارئ والأرقام المهمة | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=16" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  .sos-note{display:flex;align-items:center;gap:12px;background:#fee9e9;border:1px solid #fbcaca;color:#b91c1c;
+    border-radius:16px;padding:14px 18px;font-weight:700;margin-bottom:26px}
+  .sos-note b{font-family:'Cairo'}
+  .sec-t{font-family:'Cairo';font-size:1.25rem;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  .enum{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:30px}
+  .ecard{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow-sm)}
+  .ecard .ei{width:48px;height:48px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:1.5rem;background:var(--es,#eef2f7)}
+  .ecard .eb{flex:1;min-width:0}
+  .ecard .eb h3{font-size:1.02rem;line-height:1.25}
+  .ecard .eb span{color:var(--muted);font-size:.82rem}
+  .ecall{background:var(--green-700);color:#fff;font-weight:800;font-size:.88rem;padding:9px 15px;border-radius:100px;
+    text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .ecall.red{background:#dc2626}
+  .eadd{background:#fff;border:1.5px dashed var(--line);color:var(--slate);font-weight:800;font-size:.83rem;
+    padding:9px 13px;border-radius:100px;cursor:pointer;white-space:nowrap}
+  .local-note{color:var(--muted);font-size:.85rem;margin:-16px 0 26px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › الطوارئ والأرقام</nav>
+    <h1>🆘 الطوارئ والأرقام المهمة</h1>
+    <p>كل الأرقام المهمة في مكان واحد — اضغط «اتصال» للطلب مباشرة.</p>
+  </div>
+</section>
+
+<section style="padding-top:22px">
+  <div class="container">
+
+    <div class="sos-note">🚨 <span>في الحالات الحرجة اتصل بالطوارئ الموحّد <b>٩١١</b> مباشرة.</span></div>
+
+    <h2 class="sec-t">🚨 أرقام الطوارئ</h2>
+    <div class="enum" id="emg"></div>
+
+    <h2 class="sec-t">🔌 مرافق وخدمات</h2>
+    <div class="enum" id="srv"></div>
+
+    <h2 class="sec-t">🏘️ أرقام الحي</h2>
+    <div class="enum" id="loc"></div>
+    <p class="local-note">💾 أرقام الحي تُحفظ على جهازك — اضغط «أضف الرقم» لحفظ رقم حارس الحي أو اللجنة أو الإمام.</p>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=16"></script>
+<script>
+const toAr=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const EMG=[
+  {i:'🚨',es:'#fee2e2',n:'الطوارئ الموحّد',s:'شرطة · إسعاف · إطفاء',num:'911',red:1},
+  {i:'🚑',es:'#fee2e2',n:'الإسعاف (الهلال الأحمر)',s:'الحالات الطبية الطارئة',num:'997',red:1},
+  {i:'🔥',es:'#ffedd5',n:'الدفاع المدني',s:'الحرائق والحوادث',num:'998',red:1},
+  {i:'👮',es:'#e0e7ff',n:'الشرطة (النجدة)',s:'البلاغات الأمنية',num:'999',red:1},
+  {i:'🚗',es:'#fef9c3',n:'حوادث المرور',s:'حوادث الطرق',num:'993'},
+  {i:'🛣️',es:'#dcfce7',n:'أمن الطرق',s:'الطرق السريعة',num:'996'}
+];
+const SRV=[
+  {i:'💡',es:'#fef9c3',n:'الكهرباء',s:'بلاغ انقطاع — السعودية للكهرباء',num:'933'},
+  {i:'🚰',es:'#e0f2fe',n:'المياه',s:'شركة المياه الوطنية',num:'920004444'},
+  {i:'🏛️',es:'#ede9fe',n:'البلدية (بلدي)',s:'بلاغات ومخالفات',num:'940'},
+  {i:'🩺',es:'#dcfce7',n:'استشارات صحية',s:'وزارة الصحة — ٢٤ ساعة',num:'937'}
+];
+const LOCAL=[
+  {i:'💂',role:'guard',n:'حارس الأمن'},
+  {i:'👥',role:'committee',n:'لجنة الحي'},
+  {i:'🕌',role:'imam',n:'إمام الجامع'},
+  {i:'🔧',role:'maint',n:'صيانة الحي'}
+];
+const HK='ajyal_hotlines_v1';
+const hot=()=>{try{return JSON.parse(localStorage.getItem(HK))||{}}catch(e){return{}}};
+
+function callBtn(num,red){ return `<a class="ecall${red?' red':''}" href="tel:${num}">📞 اتصال</a>`; }
+function fixed(list,red){
+  return list.map(x=>`<div class="ecard"><div class="ei" style="--es:${x.es}">${x.i}</div>
+    <div class="eb"><h3>${x.n}</h3><span>${x.s} · ${toAr(x.num)}</span></div>${callBtn(x.num,red)}</div>`).join('');
+}
+document.getElementById('emg').innerHTML=fixed(EMG,1);
+document.getElementById('srv').innerHTML=fixed(SRV,0);
+
+function renderLocal(){
+  const h=hot();
+  document.getElementById('loc').innerHTML=LOCAL.map(x=>{
+    const num=h[x.role];
+    const action = num
+      ? `${callBtn(num,0)}`
+      : `<button class="eadd" data-role="${x.role}" data-name="${x.n}">➕ أضف الرقم</button>`;
+    const sub = num ? toAr(num) : 'لم يُضف بعد';
+    return `<div class="ecard"><div class="ei" style="--es:#eef2f7">${x.i}</div>
+      <div class="eb"><h3>${x.n}</h3><span>${sub}</span></div>${action}</div>`;
+  }).join('');
+}
+renderLocal();
+
+document.getElementById('loc').addEventListener('click',e=>{
+  const b=e.target.closest('.eadd'); if(!b) return;
+  const num=(prompt('اكتب رقم جوال '+b.dataset.name+':')||'').trim();
+  if(!num) return;
+  if(!/^[0-9+\- ]{4,}$/.test(num)){ toast('رقم غير صحيح'); return; }
+  const h=hot(); h[b.dataset.role]=num.replace(/\s/g,''); localStorage.setItem(HK,JSON.stringify(h));
+  renderLocal(); toast('✓ تم حفظ الرقم على جهازك');
+});
+</script>
+</body>
+</html>

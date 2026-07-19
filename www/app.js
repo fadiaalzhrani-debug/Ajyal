@@ -194,6 +194,40 @@ document.addEventListener('click',e=>{
   window.AjyalNative.remind(b.dataset.title||'فعالية الحي','فعالية قادمة في حي أجيال', when);
 });
 
+/* ===== مواقيت الصلاة (حي أجيال · الظهران) — مشترك بين الرئيسية وصفحة الصلاة ===== */
+window.AjyalPrayer = {
+  LAT: 26.2886, LNG: 50.15, METHOD: 4,   // 4 = أم القرى (مكة)
+  names:{Fajr:'الفجر',Sunrise:'الشروق',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'},
+  oblig:['Fajr','Dhuhr','Asr','Maghrib','Isha'],
+  ar:s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]),
+  clean:t=>(t||'').split(' ')[0],
+  fmt12(hhmm){ const p=this.clean(hhmm).split(':'); const H=+p[0],M=+p[1]||0;
+    const ap=H<12?'ص':'م'; let h=H%12; if(!h)h=12;
+    return this.ar(h+':'+String(M).padStart(2,'0'))+' '+ap; },
+  toDate(hhmm){ const p=this.clean(hhmm).split(':'); const d=new Date(); d.setHours(+p[0]||0,+p[1]||0,0,0); return d; },
+  next(T){ const now=new Date();
+    for(const k of this.oblig){ const d=this.toDate(T[k]); if(d>now) return {key:k,ar:this.names[k],time:this.clean(T[k]),when:d}; }
+    const d=this.toDate(T.Fajr); d.setDate(d.getDate()+1);
+    return {key:'Fajr',ar:this.names.Fajr,time:this.clean(T.Fajr),when:d}; },
+  async today(){
+    const today=new Date().toISOString().slice(0,10);
+    const key='ajyal_prayer_'+today;
+    try{ const c=localStorage.getItem(key); if(c) return JSON.parse(c); }catch(e){}
+    try{
+      const url='https://api.aladhan.com/v1/timings?latitude='+this.LAT+'&longitude='+this.LNG+'&method='+this.METHOD;
+      const r=await fetch(url); const j=await r.json();
+      const t=j.data.timings, hj=j.data.date.hijri;
+      const out={ timings:t, hijri:hj.day+' '+hj.month.ar+' '+hj.year+' هـ', greg:j.data.date.readable };
+      try{ localStorage.setItem(key, JSON.stringify(out)); }catch(e){}
+      return out;
+    }catch(e){
+      try{ for(let i=1;i<8;i++){ const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);
+        const c=localStorage.getItem('ajyal_prayer_'+d); if(c) return JSON.parse(c); } }catch(_){}
+      return null;
+    }
+  }
+};
+
 /* تسجيل الـ Service Worker — يخلي الموقع يشتغل كتطبيق قابل للتثبيت ويعمل offline */
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });

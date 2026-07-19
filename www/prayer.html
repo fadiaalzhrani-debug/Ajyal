@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مواقيت الصلاة | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=16" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  .next-card{background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border-radius:22px;padding:26px 22px;text-align:center;box-shadow:0 16px 40px rgba(79,70,229,.28);margin-bottom:22px}
+  .next-card .nc-label{font-weight:700;opacity:.9;font-size:.95rem}
+  .next-card .nc-name{font-family:'Cairo';font-size:2.1rem;font-weight:800;display:block;margin:4px 0 2px}
+  .next-card .nc-time{font-family:'Cairo';font-size:1.45rem;font-weight:800}
+  .next-card .nc-count{margin-top:12px;background:rgba(255,255,255,.18);display:inline-block;padding:8px 20px;border-radius:100px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .next-card .nc-date{margin-top:12px;opacity:.9;font-size:.92rem}
+  .ptimes{display:grid;gap:10px;margin-bottom:32px}
+  .prow{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow-sm);transition:.2s}
+  .prow .pn{font-weight:800;font-size:1.05rem}
+  .prow .pt{font-family:'Cairo';font-weight:800;color:var(--slate);font-size:1.05rem}
+  .prow.next{border-color:#818cf8;background:#eef0fe;box-shadow:0 8px 20px rgba(79,70,229,.15)}
+  .prow.next .pn,.prow.next .pt{color:#4338ca}
+  .prow.next .pn::after{content:" · القادمة";font-size:.78rem;font-weight:700;color:#6366f1}
+  .lessons-h{font-family:'Cairo';font-size:1.3rem;margin-bottom:6px}
+  .lessons-sub{color:var(--slate);font-size:.92rem;margin-bottom:16px}
+  .lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .lcard{display:flex;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow-sm)}
+  .lcard .li{width:46px;height:46px;flex:none;border-radius:12px;background:#eef0fe;display:grid;place-items:center;font-size:1.4rem}
+  .lcard h3{font-size:1.02rem;margin-bottom:3px}
+  .lcard p{color:var(--slate);font-size:.85rem;line-height:1.55}
+  .lcard .place{color:var(--muted);font-size:.8rem;margin-top:4px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › مواقيت الصلاة</nav>
+    <h1>🕌 مواقيت الصلاة</h1>
+    <p>مواقيت الصلاة اليوم في حي أجيال — الظهران، وجدول دروس وحلقات المسجد.</p>
+  </div>
+</section>
+
+<section style="padding-top:22px">
+  <div class="container">
+
+    <div class="next-card">
+      <span class="nc-label">الصلاة القادمة</span>
+      <b class="nc-name" id="ncName">…</b>
+      <div class="nc-time" id="ncTime"></div>
+      <div class="nc-count" id="ncCount">جارٍ الحساب…</div>
+      <div class="nc-date" id="ncDate"></div>
+    </div>
+
+    <div class="ptimes" id="ptimes"></div>
+
+    <h2 class="lessons-h">📖 دروس وحلقات المسجد</h2>
+    <p class="lessons-sub">جدول تقريبي لحلقات ودروس جامع الحي — تُحدّث من لجنة الحي.</p>
+    <div class="lessons" id="lessons"></div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=16"></script>
+<script>
+const P=window.AjyalPrayer;
+const ORDER=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+const LESSONS=[
+  {i:'📖',t:'حلقة تحفيظ القرآن',d:'يوميًا بعد صلاة العصر',p:'جامع الحي'},
+  {i:'🌙',t:'الدرس العلمي',d:'الأحد والثلاثاء بعد المغرب',p:'جامع الحي'},
+  {i:'🧒',t:'تحفيظ الأطفال',d:'يوميًا بعد صلاة المغرب',p:'مصلى الحي'},
+  {i:'👩',t:'حلقة النساء',d:'السبت بعد صلاة العشاء',p:'مصلى النساء'},
+  {i:'🕌',t:'درس الجمعة',d:'أسبوعيًا قبل صلاة الجمعة',p:'جامع الحي'},
+  {i:'🤲',t:'مجلس الذكر والدعاء',d:'ليلة الجمعة بعد المغرب',p:'جامع الحي'}
+];
+let T=null;
+
+document.getElementById('lessons').innerHTML=LESSONS.map(l=>
+  `<div class="lcard"><div class="li">${l.i}</div><div><h3>${l.t}</h3><p>${l.d}</p><div class="place">📍 ${l.p}</div></div></div>`).join('');
+
+async function init(){
+  const data=await P.today();
+  if(!data){
+    document.getElementById('ncName').textContent='تعذّر جلب المواقيت';
+    document.getElementById('ncCount').textContent='تأكد من اتصال الإنترنت وأعد المحاولة';
+    document.getElementById('ncCount').style.background='rgba(255,255,255,.15)';
+    return;
+  }
+  T=data.timings;
+  document.getElementById('ncDate').textContent=P.ar(data.hijri||'');
+  document.getElementById('ptimes').innerHTML=ORDER.map(k=>
+    `<div class="prow" data-k="${k}"><span class="pn">${P.names[k]}</span><span class="pt">${P.fmt12(T[k])}</span></div>`).join('');
+  tick(); setInterval(tick,1000);
+}
+function tick(){
+  if(!T) return;
+  const n=P.next(T);
+  document.getElementById('ncName').textContent=n.ar;
+  document.getElementById('ncTime').textContent=P.fmt12(n.time);
+  let s=Math.max(0,Math.floor((n.when-new Date())/1000));
+  const h=Math.floor(s/3600); s%=3600; const m=Math.floor(s/60); const ss=s%60;
+  const pad=x=>String(x).padStart(2,'0');
+  document.getElementById('ncCount').textContent='باقٍ '+P.ar(pad(h)+':'+pad(m)+':'+pad(ss));
+  document.querySelectorAll('.prow').forEach(r=>r.classList.toggle('next',r.dataset.k===n.key));
+}
+init();
+</script>
+</body>
+</html>

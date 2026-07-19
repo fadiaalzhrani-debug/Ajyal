@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=15" />
+<link rel="stylesheet" href="styles.css?v=16" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 </head>
 <body>
@@ -23,6 +23,20 @@
     <div class="date" id="todayDate"></div>
   </div>
 </section>
+
+<div class="prayer-band" id="prayerBand">
+  <a class="prayer-banner" href="prayer.html">
+    <div class="pb-ic">🕌</div>
+    <div class="pb-main">
+      <span class="pb-label">الصلاة القادمة</span>
+      <b class="pb-name" id="pbName">مواقيت الصلاة</b>
+    </div>
+    <div class="pb-side">
+      <span class="pb-time" id="pbTime">افتح</span>
+      <span class="pb-count" id="pbCountdown">مواقيت حي أجيال</span>
+    </div>
+  </a>
+</div>
 
 <section class="options" id="options">
   <div class="container">
@@ -92,6 +106,14 @@
         <span class="go">افتح <i>←</i></span>
       </a>
 
+      <a href="emergency.html" class="opt o-sos reveal">
+        <span class="badge">جديد</span>
+        <div class="ic">🆘</div>
+        <h3>الطوارئ والأرقام</h3>
+        <p>أرقام الطوارئ والخدمات وأرقام الحي — اتصال مباشر بضغطة.</p>
+        <span class="go">افتح <i>←</i></span>
+      </a>
+
     </div>
 
     <!-- الخريطة المميزة -->
@@ -113,6 +135,7 @@
   <div class="container">
     <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
     <div class="foot-links">
+      <a href="prayer.html">مواقيت الصلاة</a>
       <a href="restaurants.html">المطاعم</a>
       <a href="events.html">الفعاليات</a>
       <a href="events.html#comp">المسابقات</a>
@@ -122,12 +145,30 @@
       <a href="haraj.html">الحراج</a>
       <a href="occasions.html">المناسبات</a>
       <a href="map.html">الخريطة</a>
+      <a href="emergency.html">الطوارئ</a>
       <a href="privacy.html">الخصوصية</a>
     </div>
     <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
   </div>
 </footer>
 
-<script src="app.js?v=15"></script>
+<script src="app.js?v=16"></script>
+<script>
+(async function(){
+  const P=window.AjyalPrayer; if(!P||!document.getElementById('pbName')) return;
+  const data=await P.today();
+  if(!data){ const b=document.getElementById('prayerBand'); if(b) b.style.display='none'; return; }
+  function upd(){
+    const n=P.next(data.timings);
+    document.getElementById('pbName').textContent=n.ar;
+    document.getElementById('pbTime').textContent=P.fmt12(n.time);
+    let s=Math.max(0,Math.floor((n.when-new Date())/1000));
+    const h=Math.floor(s/3600); s%=3600; const m=Math.floor(s/60); const ss=s%60;
+    const pad=x=>String(x).padStart(2,'0');
+    document.getElementById('pbCountdown').textContent='باقٍ '+P.ar(pad(h)+':'+pad(m)+':'+pad(ss));
+  }
+  upd(); setInterval(upd,1000);
+})();
+</script>
 </body>
 </html>
