@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>تقويم الدوام والمدارس | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=17" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  .cal-wrap{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:18px}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .cal-head b{font-family:'Cairo';font-size:1.2rem}
+  .cal-nav{display:flex;gap:7px}
+  .cal-nav button{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:11px;font-size:1.15rem;cursor:pointer;color:var(--green-700);font-weight:800}
+  .cal-nav .today{width:auto;padding:0 14px;font-family:'Tajawal';font-size:.88rem}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .cal-dow{text-align:center;font-weight:800;font-size:.74rem;color:var(--muted);padding:4px 0}
+  .cal-cell{aspect-ratio:1;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    cursor:pointer;font-family:'Cairo';font-weight:700;font-size:.98rem;background:#f7faf9;border:1.5px solid transparent;color:#1f2937;transition:.12s}
+  .cal-cell.blank{background:none;cursor:default}
+  .cal-cell.weekend{color:#9aa8a2;background:#eef2f1}
+  .cal-cell.holiday{background:#dcfce7;color:#166534}
+  .cal-cell.today{border-color:var(--green-600)}
+  .cal-cell.sel{background:var(--green-700);color:#fff !important}
+  .cal-cell .dot{width:6px;height:6px;border-radius:50%}
+  .cal-cell.sel .dot{background:#fff !important}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:.82rem;color:var(--slate);font-weight:600}
+  .cal-legend span{display:inline-flex;align-items:center;gap:6px}
+  .cal-legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+  .detail{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:24px}
+  .detail .dhead{font-family:'Cairo';font-weight:800;font-size:1.05rem;margin-bottom:4px}
+  .detail .dtype{display:inline-block;font-weight:800;font-size:.8rem;padding:3px 12px;border-radius:100px;margin-bottom:10px}
+  .ev-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+  .ev-row .eb{flex:1}
+  .ev-row .et{font-weight:700}
+  .ev-row .badge2{font-weight:800;font-size:.74rem;padding:2px 10px;border-radius:100px}
+  .ev-row .del{border:none;background:#fee2e2;color:#dc2626;width:28px;height:28px;border-radius:8px;cursor:pointer;font-weight:800}
+  .sec-t{font-family:'Cairo';font-size:1.25rem;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  .up-list{display:grid;gap:10px;margin-bottom:28px}
+  .up-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 14px;box-shadow:var(--shadow-sm)}
+  .up-date{flex:none;width:52px;text-align:center;background:#e6f4fe;border-radius:11px;padding:6px 0;line-height:1.1}
+  .up-date b{font-family:'Cairo';font-size:1.2rem;color:#075985;display:block}
+  .up-date span{font-size:.68rem;color:#0369a1;font-weight:700}
+  .up-item .ui{flex:1}
+  .up-item .ui h3{font-size:1rem}
+  .up-item .ui span{color:var(--muted);font-size:.8rem}
+  .hours{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:26px}
+  .hcard{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow-sm)}
+  .hcard .hi{width:44px;height:44px;flex:none;border-radius:12px;background:#e6f4fe;display:grid;place-items:center;font-size:1.4rem}
+  .hcard h3{font-size:.98rem}
+  .hcard span{color:var(--slate);font-size:.85rem}
+  .add-ev{display:inline-flex;align-items:center;gap:7px;background:var(--green-700);color:#fff;border:none;font-family:'Tajawal';font-weight:800;
+    font-size:.9rem;padding:10px 18px;border-radius:100px;cursor:pointer;margin-bottom:24px}
+  .note{color:var(--muted);font-size:.85rem;margin:-14px 0 22px}
+  /* نافذة إضافة حدث */
+  .mbd{position:fixed;inset:0;background:rgba(4,36,27,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:80;padding:18px}
+  .mbd.open{display:flex}
+  .mdl{background:#fff;border-radius:20px;max-width:420px;width:100%;padding:24px;box-shadow:var(--shadow-lg)}
+  .mdl h3{font-size:1.25rem;margin-bottom:14px}
+  .mdl select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;font-family:'Tajawal';font-size:1rem;background:#fff}
+  .mdl .btn{width:100%;margin-top:6px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › التقويم والدوام</nav>
+    <h1>📅 تقويم الدوام والمدارس</h1>
+    <p>أيام الدراسة والدوام والإجازات ونهاية الأسبوع في مكان واحد — وأضف مواعيدك الخاصة.</p>
+  </div>
+</section>
+
+<section style="padding-top:22px">
+  <div class="container">
+
+    <div class="cal-wrap">
+      <div class="cal-head">
+        <b id="calTitle">—</b>
+        <div class="cal-nav">
+          <button id="prev" aria-label="الشهر السابق">›</button>
+          <button class="today" id="todayBtn">اليوم</button>
+          <button id="next" aria-label="الشهر التالي">‹</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="dow"></div>
+      <div class="cal-grid" id="grid" style="margin-top:5px"></div>
+      <div class="cal-legend">
+        <span><i style="background:#dcfce7"></i> إجازة</span>
+        <span><i style="background:#eef2f1"></i> نهاية الأسبوع</span>
+        <span><i style="background:#0ea5e9"></i> حدث / دراسة</span>
+        <span><i style="background:#fff;border:1.5px solid #059669"></i> اليوم</span>
+      </div>
+    </div>
+
+    <div class="detail" id="detail"></div>
+
+    <button class="add-ev" id="addEv">➕ أضف حدث للتقويم</button>
+
+    <h2 class="sec-t">🗓️ الأحداث القادمة</h2>
+    <div class="up-list" id="upcoming"></div>
+
+    <h2 class="sec-t">⏰ أوقات الدوام</h2>
+    <div class="hours" id="hours"></div>
+    <p class="note">المواعيد الدراسية وأوقات الدوام تقريبية وتُحدّث من لجنة الحي حسب تقويم الوزارة.</p>
+
+  </div>
+</section>
+
+<div class="mbd" id="modal">
+  <form class="mdl" id="evForm">
+    <h3>➕ أضف حدث</h3>
+    <div class="field"><label>التاريخ</label><input type="date" id="evDate" required></div>
+    <div class="field"><label>العنوان</label><input id="evTitle" required placeholder="مثال: اختبار الرياضيات / رحلة الحي"></div>
+    <div class="field"><label>النوع</label>
+      <select id="evType">
+        <option value="event">مناسبة / حدث</option>
+        <option value="school">دراسة</option>
+        <option value="exam">اختبارات</option>
+        <option value="holiday">إجازة</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">حفظ في التقويم</button>
+    <button type="button" class="btn btn-ghost" data-close style="width:100%;margin-top:8px">إلغاء</button>
+  </form>
+</div>
+
+<footer>
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=17"></script>
+<script>
+const CK='ajyal_cal_v1';
+const toAr=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const TYPES={
+  holiday:{ar:'إجازة رسمية', c:'#166534', bg:'#dcfce7', dot:'#16a34a'},
+  school :{ar:'دراسة',       c:'#075985', bg:'#e0f2fe', dot:'#0ea5e9'},
+  exam   :{ar:'اختبارات',    c:'#b45309', bg:'#fef3df', dot:'#f59e0b'},
+  event  :{ar:'مناسبة',      c:'#be123c', bg:'#ffe4e9', dot:'#fb7185'}
+};
+const SEED=[
+  {d:'2026-08-23', type:'school',  t:'بداية العام الدراسي ١٤٤٨هـ (تقريبي)'},
+  {d:'2026-09-23', type:'holiday', t:'اليوم الوطني ٩٦'},
+  {d:'2026-12-10', type:'exam',    t:'اختبارات نهاية الفصل الأول (تقريبي)'},
+  {d:'2026-12-17', type:'holiday', t:'إجازة منتصف العام (تقريبي)'},
+  {d:'2027-02-22', type:'holiday', t:'يوم التأسيس'}
+];
+const HOURS=[
+  {i:'🏫', t:'دوام المدارس',   s:'٦:٤٥ ص – ١٢:٣٠ م تقريبًا'},
+  {i:'💼', t:'الدوام الحكومي', s:'٧:٣٠ ص – ٢:٣٠ م'},
+  {i:'🏦', t:'دوام البنوك',    s:'٩:٣٠ ص – ٤:٣٠ م'},
+  {i:'🌙', t:'دوام رمضان',     s:'مخفّض حسب الجهة'},
+  {i:'📅', t:'نهاية الأسبوع',  s:'الجمعة والسبت'}
+];
+const DOW=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+const mine=()=>{try{return JSON.parse(localStorage.getItem(CK))||[]}catch(e){return[]}};
+function allEvents(){ return [...SEED, ...mine()]; }
+function evMap(){ const m={}; allEvents().forEach(e=>{ (m[e.d]=m[e.d]||[]).push(e); }); return m; }
+const two=n=>String(n).padStart(2,'0');
+const key=(y,m,d)=>y+'-'+two(m+1)+'-'+two(d);
+const todayKey=()=>{ const t=new Date(); return key(t.getFullYear(),t.getMonth(),t.getDate()); };
+
+let cur=new Date(); cur.setDate(1);
+let sel=todayKey();
+
+document.getElementById('dow').innerHTML=DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+document.getElementById('hours').innerHTML=HOURS.map(h=>
+  `<div class="hcard"><div class="hi">${h.i}</div><div><h3>${h.t}</h3><span>${h.s}</span></div></div>`).join('');
+
+function render(){
+  const y=cur.getFullYear(), m=cur.getMonth();
+  document.getElementById('calTitle').textContent=cur.toLocaleDateString('ar-EG',{month:'long',year:'numeric'});
+  const lead=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const EM=evMap(), tk=todayKey();
+  let html='';
+  for(let i=0;i<lead;i++) html+='<div class="cal-cell blank"></div>';
+  for(let d=1;d<=days;d++){
+    const k=key(y,m,d), wd=new Date(y,m,d).getDay();
+    const evs=EM[k]||[];
+    const holiday=evs.some(e=>e.type==='holiday');
+    const cls=['cal-cell'];
+    if(wd===5||wd===6) cls.push('weekend');
+    if(holiday) cls.push('holiday');
+    if(k===tk) cls.push('today');
+    if(k===sel) cls.push('sel');
+    const dotColor = evs.length ? (TYPES[evs[0].type]||{}).dot : null;
+    const dot = dotColor ? `<span class="dot" style="background:${dotColor}"></span>` : '';
+    html+=`<div class="${cls.join(' ')}" data-k="${k}"><span>${toAr(d)}</span>${dot}</div>`;
+  }
+  document.getElementById('grid').innerHTML=html;
+  renderDetail();
+  renderUpcoming();
+}
+function renderDetail(){
+  const el=document.getElementById('detail');
+  const dt=new Date(sel+'T00:00:00');
+  const nice=dt.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const wd=dt.getDay();
+  const evs=(evMap()[sel]||[]);
+  let dayType, dtBg, dtC;
+  if(evs.some(e=>e.type==='holiday')){ dayType='إجازة رسمية'; dtBg='#dcfce7'; dtC='#166534'; }
+  else if(wd===5||wd===6){ dayType='نهاية الأسبوع'; dtBg='#eef2f1'; dtC='#475569'; }
+  else { dayType='يوم دوام'; dtBg='#e0f2fe'; dtC='#075985'; }
+  let rows = evs.length ? evs.map(e=>{
+    const T=TYPES[e.type]||TYPES.event;
+    const isMine=mine().some(x=>x.d===e.d && x.t===e.t);
+    const del=isMine?`<button class="del" data-del="${e.d}|${e.t}">✕</button>`:'';
+    return `<div class="ev-row"><div class="eb"><div class="et">${e.t}</div></div>
+      <span class="badge2" style="background:${T.bg};color:${T.c}">${T.ar}</span>${del}</div>`;
+  }).join('') : '<div class="ev-row" style="color:var(--muted);border:none">لا توجد أحداث في هذا اليوم.</div>';
+  el.innerHTML=`<div class="dhead">${nice}</div>
+    <span class="dtype" style="background:${dtBg};color:${dtC}">${dayType}</span>${rows}`;
+}
+function renderUpcoming(){
+  const tk=todayKey();
+  const up=allEvents().filter(e=>e.d>=tk).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,6);
+  document.getElementById('upcoming').innerHTML = up.length ? up.map(e=>{
+    const dt=new Date(e.d+'T00:00:00'); const T=TYPES[e.type]||TYPES.event;
+    const day=toAr(dt.getDate()); const mon=dt.toLocaleDateString('ar-EG',{month:'short'});
+    return `<div class="up-item"><div class="up-date"><b>${day}</b><span>${mon}</span></div>
+      <div class="ui"><h3>${e.t}</h3><span>${dt.toLocaleDateString('ar-EG',{weekday:'long'})}</span></div>
+      <span class="badge2" style="background:${T.bg};color:${T.c};font-weight:800;font-size:.74rem;padding:3px 11px;border-radius:100px">${T.ar}</span></div>`;
+  }).join('') : '<div class="up-item" style="color:var(--muted)">لا أحداث قادمة مسجّلة.</div>';
+}
+
+document.getElementById('grid').addEventListener('click',e=>{
+  const c=e.target.closest('.cal-cell[data-k]'); if(!c) return;
+  sel=c.dataset.k; render();
+});
+document.getElementById('detail').addEventListener('click',e=>{
+  const b=e.target.closest('[data-del]'); if(!b) return;
+  const [d,t]=b.dataset.del.split('|');
+  localStorage.setItem(CK, JSON.stringify(mine().filter(x=>!(x.d===d && x.t===t))));
+  render(); toast('✓ تم حذف الحدث');
+});
+document.getElementById('prev').addEventListener('click',()=>{ cur.setMonth(cur.getMonth()-1); render(); });
+document.getElementById('next').addEventListener('click',()=>{ cur.setMonth(cur.getMonth()+1); render(); });
+document.getElementById('todayBtn').addEventListener('click',()=>{ cur=new Date(); cur.setDate(1); sel=todayKey(); render(); });
+
+const modal=document.getElementById('modal');
+document.getElementById('addEv').addEventListener('click',e=>{ e.stopPropagation();
+  document.getElementById('evDate').value=sel; modal.classList.add('open'); });
+modal.addEventListener('click',e=>{ if(e.target===modal||e.target.closest('[data-close]')) modal.classList.remove('open'); });
+document.getElementById('evForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const rec={ d:document.getElementById('evDate').value, t:document.getElementById('evTitle').value.trim(), type:document.getElementById('evType').value };
+  if(!rec.d||!rec.t) return;
+  const arr=mine(); arr.push(rec); localStorage.setItem(CK, JSON.stringify(arr));
+  sel=rec.d; cur=new Date(rec.d+'T00:00:00'); cur.setDate(1);
+  modal.classList.remove('open'); e.target.reset();
+  render(); toast('✓ أضفنا الحدث لتقويمك');
+});
+
+render();
+</script>
+</body>
+</html>

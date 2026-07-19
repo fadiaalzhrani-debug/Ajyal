@@ -127,6 +127,7 @@ section{padding:60px 0}
 .o-occ{--accent:#fb7185;--accent-soft:#ffe9ee;--accent-ink:#be123c}
 .o-pray{--accent:#818cf8;--accent-soft:#eef0fe;--accent-ink:#4f46e5}
 .o-sos{--accent:#f87171;--accent-soft:#fee9e9;--accent-ink:#dc2626}
+.o-cal{--accent:#0ea5e9;--accent-soft:#e6f4fe;--accent-ink:#075985}
 
 /* شريط الصلاة القادمة (الرئيسية) */
 .prayer-band{padding:22px 4% 0}
