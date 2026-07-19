@@ -3,10 +3,8 @@
 /* ====== إعدادات الحي — عدّليها من هنا ======
    • HAYNA_ORDER_NUMBER: رقم واتساب استقبال الطلبات والتوصيل (صيغة دولية بدون +)، مثال: "9665xxxxxxx".
      - فاضي  = الطلب يُحفظ ويطلع تأكيد فقط (وضع تجريبي).
-     - فيه رقم = كل طلب يفتح رسالة واتساب جاهزة تنرسل للرقم (طلبات حقيقية).
-   • HAYNA_SNAP: رابط سناب حي أجيال (غيّري الاسم "ajyal" للاسم الصحيح). */
+     - فيه رقم = كل طلب يفتح رسالة واتساب جاهزة تنرسل للرقم (طلبات حقيقية). */
 const HAYNA_ORDER_NUMBER = "";
-const HAYNA_SNAP = "https://www.snapchat.com/add/ajyal";
 
 /* ====== قاعدة بيانات الحي (Supabase) ======
    بعد إنشاء مشروع Supabase (اتبعي ملف supabase-setup.md)، ضعي الرابط والمفتاح هنا:
@@ -147,20 +145,6 @@ document.addEventListener('click',e=>{
   input.addEventListener('input',apply); apply();
 })();
 
-/* صندوق التواصل (سناب أجيال) داخل الفوتر — يُضاف تلقائيًا لكل الصفحات */
-(function(){
-  const foot=document.querySelector('footer .container');
-  if(!foot || document.querySelector('.foot-social')) return;
-  const box=document.createElement('div'); box.className='foot-social';
-  box.innerHTML='<span class="foot-social__label">تابعونا على سناب شات</span>'
-    +'<a class="soc-snap" href="'+HAYNA_SNAP+'" target="_blank" rel="noopener">👻 سناب أجيال</a>';
-  const links=foot.querySelector('.foot-links');
-  if(links) foot.insertBefore(box,links); else foot.appendChild(box);
-})();
-
-/* توحيد رابط سناب من الإعدادات (بطاقة الرئيسية وأي رابط عليه data-snap) */
-document.querySelectorAll('a[data-snap]').forEach(a=>{ a.href=HAYNA_SNAP; });
-
 /* ===== ميزة أصلية للتطبيق: تنبيهات محلية (تذكير بالفعاليات) ===== */
 window.AjyalNative = (function(){
   const LN = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
@@ -194,39 +178,19 @@ document.addEventListener('click',e=>{
   window.AjyalNative.remind(b.dataset.title||'فعالية الحي','فعالية قادمة في حي أجيال', when);
 });
 
-/* ===== مواقيت الصلاة (حي أجيال · الظهران) — مشترك بين الرئيسية وصفحة الصلاة ===== */
-window.AjyalPrayer = {
-  LAT: 26.2886, LNG: 50.15, METHOD: 4,   // 4 = أم القرى (مكة)
-  names:{Fajr:'الفجر',Sunrise:'الشروق',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'},
-  oblig:['Fajr','Dhuhr','Asr','Maghrib','Isha'],
-  ar:s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]),
-  clean:t=>(t||'').split(' ')[0],
-  fmt12(hhmm){ const p=this.clean(hhmm).split(':'); const H=+p[0],M=+p[1]||0;
-    const ap=H<12?'ص':'م'; let h=H%12; if(!h)h=12;
-    return this.ar(h+':'+String(M).padStart(2,'0'))+' '+ap; },
-  toDate(hhmm){ const p=this.clean(hhmm).split(':'); const d=new Date(); d.setHours(+p[0]||0,+p[1]||0,0,0); return d; },
-  next(T){ const now=new Date();
-    for(const k of this.oblig){ const d=this.toDate(T[k]); if(d>now) return {key:k,ar:this.names[k],time:this.clean(T[k]),when:d}; }
-    const d=this.toDate(T.Fajr); d.setDate(d.getDate()+1);
-    return {key:'Fajr',ar:this.names.Fajr,time:this.clean(T.Fajr),when:d}; },
-  async today(){
-    const today=new Date().toISOString().slice(0,10);
-    const key='ajyal_prayer_'+today;
-    try{ const c=localStorage.getItem(key); if(c) return JSON.parse(c); }catch(e){}
-    try{
-      const url='https://api.aladhan.com/v1/timings?latitude='+this.LAT+'&longitude='+this.LNG+'&method='+this.METHOD;
-      const r=await fetch(url); const j=await r.json();
-      const t=j.data.timings, hj=j.data.date.hijri;
-      const out={ timings:t, hijri:hj.day+' '+hj.month.ar+' '+hj.year+' هـ', greg:j.data.date.readable };
-      try{ localStorage.setItem(key, JSON.stringify(out)); }catch(e){}
-      return out;
-    }catch(e){
-      try{ for(let i=1;i<8;i++){ const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);
-        const c=localStorage.getItem('ajyal_prayer_'+d); if(c) return JSON.parse(c); } }catch(_){}
-      return null;
-    }
+/* التمرير لقسم الرابط (#news / #comp) — بعض المتصفحات والتطبيق ما تنزل تلقائيًا */
+(function(){
+  function goHash(){
+    const h=location.hash; if(!h || h.length<2) return;
+    const el=document.getElementById(decodeURIComponent(h.slice(1))); if(!el) return;
+    setTimeout(()=>{
+      const top = el.getBoundingClientRect().top + window.scrollY - 8;
+      window.scrollTo({ top, behavior:'instant' });
+    }, 80);
   }
-};
+  window.addEventListener('load', goHash);
+  window.addEventListener('hashchange', goHash);
+})();
 
 /* تسجيل الـ Service Worker — يخلي الموقع يشتغل كتطبيق قابل للتثبيت ويعمل offline */
 if('serviceWorker' in navigator){

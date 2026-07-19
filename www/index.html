@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=17" />
+<link rel="stylesheet" href="styles.css?v=20" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 </head>
 <body>
@@ -23,20 +23,6 @@
     <div class="date" id="todayDate"></div>
   </div>
 </section>
-
-<div class="prayer-band" id="prayerBand">
-  <a class="prayer-banner" href="prayer.html">
-    <div class="pb-ic">🕌</div>
-    <div class="pb-main">
-      <span class="pb-label">الصلاة القادمة</span>
-      <b class="pb-name" id="pbName">مواقيت الصلاة</b>
-    </div>
-    <div class="pb-side">
-      <span class="pb-time" id="pbTime">افتح</span>
-      <span class="pb-count" id="pbCountdown">مواقيت حي أجيال</span>
-    </div>
-  </a>
-</div>
 
 <section class="options" id="options">
   <div class="container">
@@ -56,17 +42,9 @@
       <a href="events.html" class="opt o-events reveal">
         <span class="badge">جديد</span>
         <div class="ic">🎉</div>
-        <h3>فعاليات الحي</h3>
-        <p>فعاليات وأنشطة ومسابقات الحي — سجّل حضورك ومشاركتك.</p>
+        <h3>فعاليات وأخبار</h3>
+        <p>فعاليات ومسابقات الحي وآخر الأخبار — سجّل حضورك ومشاركتك.</p>
         <span class="go">افتح <i>←</i></span>
-      </a>
-
-      <a href="https://www.snapchat.com/add/ajyal" data-snap target="_blank" rel="noopener" class="opt o-snap reveal">
-        <span class="badge">تابعنا</span>
-        <div class="ic">👻</div>
-        <h3>سناب أجيال</h3>
-        <p>تابع جديد الحي وفعالياته ولحظاته أول بأول على سناب شات.</p>
-        <span class="go">تابعنا <i>←</i></span>
       </a>
 
       <a href="services.html" class="opt o-serv reveal">
@@ -80,13 +58,6 @@
         <div class="ic">👩‍🍳</div>
         <h3>الأسر المنتجة</h3>
         <p>أكل بيتي وحلويات وحرف من بيوت الحي.</p>
-        <span class="go">افتح <i>←</i></span>
-      </a>
-
-      <a href="news.html" class="opt o-news reveal">
-        <div class="ic">📣</div>
-        <h3>أخبار الحي</h3>
-        <p>كل جديد ومعلومة تهم أهل الحي، أول بأول.</p>
         <span class="go">افتح <i>←</i></span>
       </a>
 
@@ -143,13 +114,12 @@
   <div class="container">
     <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
     <div class="foot-links">
-      <a href="prayer.html">مواقيت الصلاة</a>
       <a href="restaurants.html">المطاعم</a>
       <a href="events.html">الفعاليات</a>
       <a href="events.html#comp">المسابقات</a>
       <a href="services.html">الخدمات</a>
       <a href="families.html">الأسر المنتجة</a>
-      <a href="news.html">الأخبار</a>
+      <a href="events.html#news">الأخبار</a>
       <a href="haraj.html">الحراج</a>
       <a href="occasions.html">المناسبات</a>
       <a href="map.html">الخريطة</a>
@@ -161,23 +131,6 @@
   </div>
 </footer>
 
-<script src="app.js?v=17"></script>
-<script>
-(async function(){
-  const P=window.AjyalPrayer; if(!P||!document.getElementById('pbName')) return;
-  const data=await P.today();
-  if(!data){ const b=document.getElementById('prayerBand'); if(b) b.style.display='none'; return; }
-  function upd(){
-    const n=P.next(data.timings);
-    document.getElementById('pbName').textContent=n.ar;
-    document.getElementById('pbTime').textContent=P.fmt12(n.time);
-    let s=Math.max(0,Math.floor((n.when-new Date())/1000));
-    const h=Math.floor(s/3600); s%=3600; const m=Math.floor(s/60); const ss=s%60;
-    const pad=x=>String(x).padStart(2,'0');
-    document.getElementById('pbCountdown').textContent='باقٍ '+P.ar(pad(h)+':'+pad(m)+':'+pad(ss));
-  }
-  upd(); setInterval(upd,1000);
-})();
-</script>
+<script src="app.js?v=20"></script>
 </body>
 </html>
