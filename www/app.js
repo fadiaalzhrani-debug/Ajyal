@@ -20,7 +20,15 @@ window.AjyalCloud = { enabled:false, insert:async()=>{}, list:async()=>null };
     window.AjyalCloud = {
       enabled:true,
       insert:async(t,r)=>{ try{ await sb.from(t).insert(r); }catch(e){} },
-      list:async(t)=>{ try{ const {data,error}=await sb.from(t).select('*').order('created_at',{ascending:false}); if(error) return null; return data||[]; }catch(e){ return null; } }
+      list:async(t)=>{ try{ const {data,error}=await sb.from(t).select('*').order('created_at',{ascending:false}); if(error) return null; return data||[]; }catch(e){ return null; } },
+      /* تسجيل دخول لوحة التحكم — الطلبات والتسجيلات ما تُقرأ إلا بحساب */
+      signIn:async(email,password)=>{
+        try{ const {error}=await sb.auth.signInWithPassword({email,password});
+          return error ? {ok:false,msg:error.message} : {ok:true}; }
+        catch(e){ return {ok:false,msg:'تعذّر الاتصال'}; }
+      },
+      signOut:async()=>{ try{ await sb.auth.signOut(); }catch(e){} },
+      user:async()=>{ try{ const {data}=await sb.auth.getSession(); return data && data.session ? data.session.user : null; }catch(e){ return null; } }
     };
     document.dispatchEvent(new Event('ajyal-cloud-ready'));
   }catch(e){}

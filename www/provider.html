@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=23" />
+<link rel="stylesheet" href="styles.css?v=24" />
 <style>
   .adm{max-width:940px;margin:0 auto;padding:24px 4%}
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
@@ -55,8 +55,10 @@
     <option>سباكة</option><option>كهرباء</option><option>تكييف وتبريد</option><option>تنظيف منازل</option>
     <option>تنسيق حدائق</option><option>غسيل سيارات</option><option>دهانات وديكور</option><option>نجارة وأثاث</option><option>نقل عفش</option>
   </datalist>
-  <label>رمز المزوّد</label>
-  <input id="gCode" type="password" placeholder="الرمز" autocomplete="off" />
+  <label>الإيميل</label>
+  <input id="gEmail" type="email" placeholder="الإيميل" autocomplete="username" />
+  <label>كلمة المرور</label>
+  <input id="gCode" type="password" placeholder="كلمة المرور" autocomplete="current-password" />
   <button class="btn btn-primary" id="gBtn">دخول</button>
 </div>
 
@@ -83,27 +85,40 @@
   </thead><tbody id="tbody"></tbody></table></div>
 </div>
 
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 <script>
-const PROVIDER_CODE = "ajyal2026";   // ← رمز دخول المزوّدين (غيّريه)
 const gate=document.getElementById('gate'), panel=document.getElementById('panel');
 let BIZ='', ALL=[];
 const ls=(k)=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
 const fmt=(ts)=>{ if(!ts)return '—'; const d=new Date(ts); return d.toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('ar-SA-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); };
 
-function tryEnter(){
-  const biz=(document.getElementById('gBiz').value||'').trim();
-  const code=document.getElementById('gCode').value;
-  if(!biz){ document.getElementById('gErr').textContent='اكتب اسم نشاطك'; return; }
-  if(code!==PROVIDER_CODE){ document.getElementById('gErr').textContent='رمز غير صحيح'; return; }
+function showPanel(biz){
   BIZ=biz; sessionStorage.setItem('ajyal_provider',biz);
   gate.style.display='none'; panel.style.display='block';
   document.getElementById('bizName').textContent=biz;
   load();
 }
+async function tryEnter(){
+  const biz=(document.getElementById('gBiz').value||'').trim();
+  const email=(document.getElementById('gEmail').value||'').trim();
+  const pw=document.getElementById('gCode').value;
+  const gErr=document.getElementById('gErr');
+  if(!biz){ gErr.textContent='اكتب اسم نشاطك'; return; }
+  if(!window.AjyalCloud || !window.AjyalCloud.enabled){ gErr.textContent='جارٍ الاتصال بالسحابة… أعد المحاولة'; return; }
+  if(!email || !pw){ gErr.textContent='اكتب الإيميل وكلمة المرور'; return; }
+  gErr.textContent='جارٍ الدخول…';
+  const r=await window.AjyalCloud.signIn(email,pw);
+  if(!r.ok){ gErr.textContent='بيانات الدخول غير صحيحة'; return; }
+  gErr.textContent=''; showPanel(biz);
+}
 document.getElementById('gBtn').addEventListener('click',tryEnter);
 document.getElementById('gCode').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
-document.getElementById('logout').addEventListener('click',()=>{sessionStorage.removeItem('ajyal_provider');location.reload();});
+document.getElementById('gEmail').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
+document.getElementById('logout').addEventListener('click',async()=>{
+  sessionStorage.removeItem('ajyal_provider');
+  if(window.AjyalCloud && window.AjyalCloud.signOut) await window.AjyalCloud.signOut();
+  location.reload();
+});
 document.getElementById('refresh').addEventListener('click',load);
 
 async function load(){
@@ -126,8 +141,15 @@ async function load(){
 }
 document.addEventListener('ajyal-cloud-ready',()=>{ if(BIZ) load(); });
 
-/* دخول تلقائي إذا سبق (بعد تعريف الدوال) */
-(function(){ const b=sessionStorage.getItem('ajyal_provider'); if(b){ document.getElementById('gBiz').value=b; document.getElementById('gCode').value=PROVIDER_CODE; tryEnter(); } })();
+/* لو الجلسة ما زالت فعّالة وسبق اختيار النشاط، ادخل تلقائيًا */
+async function checkSession(){
+  const b=sessionStorage.getItem('ajyal_provider');
+  if(!b || !window.AjyalCloud || !window.AjyalCloud.enabled) return;
+  document.getElementById('gBiz').value=b;
+  const u=await window.AjyalCloud.user(); if(u) showPanel(b);
+}
+document.addEventListener('ajyal-cloud-ready',checkSession);
+setTimeout(checkSession,1200);
 </script>
 </body>
 </html>

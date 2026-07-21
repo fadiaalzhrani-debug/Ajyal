@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=23" />
+<link rel="stylesheet" href="styles.css?v=24" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 <style>
   body{padding-bottom:86px}
@@ -115,7 +115,7 @@
   </div>
 </footer>
 
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 <script>
 const OK='hayna_occasions_v1', RK='hayna_occ_reacts_v1';
 const ls=()=>{try{return JSON.parse(localStorage.getItem(OK))||[]}catch(e){return[]}};
@@ -145,12 +145,11 @@ function timeAgo(ts){
 async function load(){
   let user=null;
   if(window.AjyalCloud && window.AjyalCloud.enabled){
-    const reqs = await window.AjyalCloud.list('requests');
-    if(reqs) user = reqs.filter(r=>r.action==='occasion').map(r=>{
-      let x={}; try{ x=JSON.parse(r.extra||'{}'); }catch(e){}
-      return { id:'c'+(r.ts||r.created_at||Math.random()), kind:KINDS[x.kind]?x.kind:'birth', who:r.item||'أحد الجيران',
-        msg:x.msg||'', name:r.name||'', ts:r.ts||Date.parse(r.created_at)||Date.now(), rx:x.rx||0 };
-    });
+    const rows = await window.AjyalCloud.list('occasions');
+    if(rows) user = rows.map(r=>({
+      id:'c'+(r.id||r.ts||Math.random()), kind:KINDS[r.kind]?r.kind:'birth', who:r.who||'أحد الجيران',
+      msg:r.msg||'', name:r.name||'', ts:r.ts||Date.parse(r.created_at)||Date.now(), rx:0
+    }));
   }
   if(!user) user = ls().slice().reverse();
   DATA = [...user, ...SAMPLES];
@@ -208,8 +207,8 @@ document.getElementById('oForm').addEventListener('submit',e=>{
   const rec={ id:'u'+Date.now(), kind, who:clean(document.getElementById('oWho').value,60),
     msg:clean(document.getElementById('oMsg').value,200), name:clean(document.getElementById('oName').value,60), ts:Date.now(), rx:0 };
   const all=ls(); all.push(rec); localStorage.setItem(OK,JSON.stringify(all));
-  if(window.AjyalCloud) window.AjyalCloud.insert('requests', { action:'occasion', item:rec.who, name:rec.name,
-    phone:'', extra:JSON.stringify({kind:rec.kind, msg:rec.msg, rx:0}), ts:rec.ts });
+  if(window.AjyalCloud) window.AjyalCloud.insert('occasions', { kind:rec.kind, who:rec.who,
+    msg:rec.msg, name:rec.name, ts:rec.ts });
   modal.classList.remove('open'); e.target.reset();
   toast('✓ تم نشر مناسبتك — مبارك لأهل الحي');
   load();

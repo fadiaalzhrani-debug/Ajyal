@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=23" />
+<link rel="stylesheet" href="styles.css?v=24" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 <style>
   body{padding-bottom:86px}
@@ -106,7 +106,7 @@
   </div>
 </footer>
 
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 <script>
 const HK='hayna_haraj_v1';
 const ls=()=>{try{return JSON.parse(localStorage.getItem(HK))||[]}catch(e){return[]}};
@@ -124,12 +124,11 @@ let filter='all', DATA=[];
 async function load(){
   let user=null;
   if(window.AjyalCloud && window.AjyalCloud.enabled){
-    const reqs = await window.AjyalCloud.list('requests');
-    if(reqs) user = reqs.filter(r=>r.action==='haraj').map(r=>{
-      let x={}; try{ x=JSON.parse(r.extra||'{}'); }catch(e){}
-      return { type:x.type||'sale', title:r.item||'إعلان', price:x.price||0, descr:x.descr||'',
-        emoji:x.emoji||'📦', name:r.name||'جار الحي', phone:r.phone||'', ts:r.ts||Date.parse(r.created_at)||0 };
-    });
+    const rows = await window.AjyalCloud.list('haraj');
+    if(rows) user = rows.map(r=>({
+      type:r.type||'sale', title:r.title||'إعلان', price:r.price||0, descr:r.descr||'',
+      emoji:r.emoji||'📦', name:r.name||'جار الحي', phone:r.phone||'', ts:r.ts||Date.parse(r.created_at)||0
+    }));
   }
   if(!user) user = ls().slice().reverse();
   DATA = [...user, ...SAMPLES];
@@ -176,8 +175,8 @@ document.getElementById('hForm').addEventListener('submit',e=>{
   const rec={ type, title:clean(hTitle.value,80), price: type==='free'?0:Math.max(0,Number(hPrice.value)||0),
     descr:clean(hDesc.value,200), name:'جار الحي', phone:escPhone(hPhone.value), emoji:type==='free'?'🎁':'🏷️', ts:Date.now() };
   const all=ls(); all.push(rec); localStorage.setItem(HK,JSON.stringify(all));
-  if(window.AjyalCloud) window.AjyalCloud.insert('requests', { action:'haraj', item:rec.title, name:rec.name,
-    phone:rec.phone, extra:JSON.stringify({type:rec.type, price:rec.price, descr:rec.descr, emoji:rec.emoji}), ts:rec.ts });
+  if(window.AjyalCloud) window.AjyalCloud.insert('haraj', { type:rec.type, title:rec.title, price:rec.price,
+    descr:rec.descr, name:rec.name, phone:rec.phone, emoji:rec.emoji, ts:rec.ts });
   modal.classList.remove('open'); e.target.reset();
   document.getElementById('priceField').style.display='block';
   toast('✓ تم نشر إعلانك في حراج الحي');

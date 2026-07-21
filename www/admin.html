@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=23" />
+<link rel="stylesheet" href="styles.css?v=24" />
 <style>
   .adm{max-width:1080px;margin:0 auto;padding:24px 4%}
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
@@ -49,9 +49,10 @@
 <div id="gate" class="gate">
   <span class="logo__mark"></span>
   <h2>لوحة تحكم أجيال</h2>
-  <p>أدخل رمز الدخول للوحة الإدارة.</p>
+  <p>سجّل الدخول بحساب الإدارة.</p>
   <div class="err" id="gErr"></div>
-  <input id="gCode" type="password" placeholder="رمز الدخول" autocomplete="off" />
+  <input id="gEmail" type="email" placeholder="الإيميل" autocomplete="username" />
+  <input id="gCode" type="password" placeholder="كلمة المرور" autocomplete="current-password" />
   <button class="btn btn-primary" id="gBtn">دخول</button>
 </div>
 
@@ -61,6 +62,7 @@
     <h1>🗂️ لوحة تحكم حي أجيال</h1>
     <div style="display:flex;gap:10px;align-items:center">
       <span class="cloud-pill" id="cloudPill">…</span>
+      <button class="btn btn-ghost" id="logout" style="padding:9px 18px">خروج</button>
       <a href="index.html" class="btn btn-ghost" style="padding:9px 18px">← الموقع</a>
     </div>
   </div>
@@ -85,18 +87,36 @@
   <div class="tablewrap"><table id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
 </div>
 
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 <script>
-/* ====== بوابة الدخول (تجريبية — للحماية الحقيقية نستخدم تسجيل Supabase) ====== */
-const ADMIN_CODE = "ajyal2026";   // ← غيّري رمز الدخول من هنا
+/* ====== تسجيل الدخول عبر Supabase (البيانات ما تُقرأ إلا بحساب) ====== */
 const gate=document.getElementById('gate'), panel=document.getElementById('panel');
-function tryEnter(){
-  if(document.getElementById('gCode').value===ADMIN_CODE || sessionStorage.getItem('ajyal_admin')==='1'){
-    sessionStorage.setItem('ajyal_admin','1'); gate.style.display='none'; panel.style.display='block'; load();
-  } else { document.getElementById('gErr').textContent='رمز غير صحيح'; }
+const gErr=document.getElementById('gErr');
+function showPanel(){ gate.style.display='none'; panel.style.display='block'; load(); }
+async function tryEnter(){
+  const email=(document.getElementById('gEmail').value||'').trim();
+  const pw=document.getElementById('gCode').value;
+  if(!window.AjyalCloud || !window.AjyalCloud.enabled){ gErr.textContent='جارٍ الاتصال بالسحابة… أعد المحاولة بعد لحظة'; return; }
+  if(!email || !pw){ gErr.textContent='اكتب الإيميل وكلمة المرور'; return; }
+  gErr.textContent='جارٍ الدخول…';
+  const r=await window.AjyalCloud.signIn(email,pw);
+  if(!r.ok){ gErr.textContent='بيانات الدخول غير صحيحة'; return; }
+  gErr.textContent=''; showPanel();
 }
 document.getElementById('gBtn').addEventListener('click',tryEnter);
 document.getElementById('gCode').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
+document.getElementById('gEmail').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
+/* لو الجلسة ما زالت فعّالة، ادخل تلقائيًا */
+async function checkSession(){
+  if(!window.AjyalCloud || !window.AjyalCloud.enabled) return;
+  const u=await window.AjyalCloud.user(); if(u) showPanel();
+}
+document.addEventListener('ajyal-cloud-ready',checkSession);
+setTimeout(checkSession,1200);
+document.getElementById('logout').addEventListener('click',async()=>{
+  if(window.AjyalCloud && window.AjyalCloud.signOut) await window.AjyalCloud.signOut();
+  location.reload();
+});
 
 /* ====== البيانات ====== */
 let current='req', REQ=[], REG=[];
@@ -160,8 +180,6 @@ document.getElementById('export').addEventListener('click',()=>{
 });
 document.addEventListener('ajyal-cloud-ready',load);
 
-/* دخول تلقائي إذا سبق تسجيل الدخول (بعد تعريف كل الدوال) */
-if(sessionStorage.getItem('ajyal_admin')==='1') tryEnter();
 </script>
 </body>
 </html>
