@@ -126,6 +126,7 @@ section{padding:60px 0}
 .o-occ{--accent:#fb7185;--accent-soft:#ffe9ee;--accent-ink:#be123c}
 .o-sos{--accent:#f87171;--accent-soft:#fee9e9;--accent-ink:#dc2626}
 .o-cal{--accent:#0ea5e9;--accent-soft:#e6f4fe;--accent-ink:#075985}
+.o-women{--accent:#e879f9;--accent-soft:#fdeaff;--accent-ink:#a21caf}
 @media(max-width:820px){.options__grid{grid-template-columns:repeat(3,1fr);gap:12px}}
 @media(max-width:600px){
   .options__grid{gap:9px}

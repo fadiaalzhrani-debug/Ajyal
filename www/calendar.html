@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20" />
+<link rel="stylesheet" href="styles.css?v=23" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 <style>
   .cal-wrap{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:18px}
@@ -146,7 +146,7 @@
   </div>
 </footer>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=23"></script>
 <script>
 const CK='ajyal_cal_v1';
 const toAr=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
@@ -224,8 +224,8 @@ function renderDetail(){
   let rows = evs.length ? evs.map(e=>{
     const T=TYPES[e.type]||TYPES.event;
     const isMine=mine().some(x=>x.d===e.d && x.t===e.t);
-    const del=isMine?`<button class="del" data-del="${e.d}|${e.t}">✕</button>`:'';
-    return `<div class="ev-row"><div class="eb"><div class="et">${e.t}</div></div>
+    const del=isMine?`<button class="del" data-del="${esc(e.d+'|'+e.t)}">✕</button>`:'';
+    return `<div class="ev-row"><div class="eb"><div class="et">${esc(e.t)}</div></div>
       <span class="badge2" style="background:${T.bg};color:${T.c}">${T.ar}</span>${del}</div>`;
   }).join('') : '<div class="ev-row" style="color:var(--muted);border:none">لا توجد أحداث في هذا اليوم.</div>';
   el.innerHTML=`<div class="dhead">${nice}</div>
@@ -238,7 +238,7 @@ function renderUpcoming(){
     const dt=new Date(e.d+'T00:00:00'); const T=TYPES[e.type]||TYPES.event;
     const day=toAr(dt.getDate()); const mon=dt.toLocaleDateString('ar-EG',{month:'short'});
     return `<div class="up-item"><div class="up-date"><b>${day}</b><span>${mon}</span></div>
-      <div class="ui"><h3>${e.t}</h3><span>${dt.toLocaleDateString('ar-EG',{weekday:'long'})}</span></div>
+      <div class="ui"><h3>${esc(e.t)}</h3><span>${dt.toLocaleDateString('ar-EG',{weekday:'long'})}</span></div>
       <span class="badge2" style="background:${T.bg};color:${T.c};font-weight:800;font-size:.74rem;padding:3px 11px;border-radius:100px">${T.ar}</span></div>`;
   }).join('') : '<div class="up-item" style="color:var(--muted)">لا أحداث قادمة مسجّلة.</div>';
 }
@@ -263,7 +263,7 @@ document.getElementById('addEv').addEventListener('click',e=>{ e.stopPropagation
 modal.addEventListener('click',e=>{ if(e.target===modal||e.target.closest('[data-close]')) modal.classList.remove('open'); });
 document.getElementById('evForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const rec={ d:document.getElementById('evDate').value, t:document.getElementById('evTitle').value.trim(), type:document.getElementById('evType').value };
+  const rec={ d:document.getElementById('evDate').value, t:clean(document.getElementById('evTitle').value,80), type:document.getElementById('evType').value };
   if(!rec.d||!rec.t) return;
   const arr=mine(); arr.push(rec); localStorage.setItem(CK, JSON.stringify(arr));
   sel=rec.d; cur=new Date(rec.d+'T00:00:00'); cur.setDate(1);

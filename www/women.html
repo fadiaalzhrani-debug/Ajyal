@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ركن نساء الحي | حي أجيال</title>
+<link rel="icon" href="ajyal.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=23" />
+<meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  .wnote{display:flex;align-items:center;gap:12px;background:#fdeaff;border:1px solid #f3d0fb;color:#86198f;
+    border-radius:16px;padding:14px 18px;font-weight:700;font-size:.94rem;line-height:1.6;margin-bottom:28px}
+  .sec-t{font-family:'Cairo';font-size:1.3rem;margin:0 0 5px;display:flex;align-items:center;gap:9px}
+  .sec-p{color:var(--slate);font-size:.94rem;margin-bottom:16px}
+  .wsection{margin-bottom:34px}
+  /* نادي المشي */
+  .walk-card{display:flex;gap:16px;background:linear-gradient(135deg,#a21caf,#c026d3);color:#fff;border-radius:22px;
+    padding:22px;box-shadow:0 16px 40px rgba(162,28,175,.25);align-items:flex-start;flex-wrap:wrap}
+  .walk-card .wc-ic{width:62px;height:62px;flex:none;border-radius:18px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:2rem}
+  .walk-card .wc-b{flex:1;min-width:220px}
+  .walk-card h3{font-family:'Cairo';font-size:1.35rem;margin-bottom:4px}
+  .walk-card p{opacity:.92;font-size:.94rem;line-height:1.6;margin-bottom:12px}
+  .wc-times{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .wc-times span{background:rgba(255,255,255,.18);border-radius:100px;padding:6px 14px;font-weight:700;font-size:.86rem}
+  .walk-card .btn{background:#fff;color:#a21caf}
+  .walk-card .btn:hover{background:#fdf4ff}
+  /* بطاقات معلومات */
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+  .meet-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow-sm);
+    display:flex;flex-direction:column;transition:.2s}
+  .meet-card:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+  .meet-card .mc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .meet-card .mc-ic{width:52px;height:52px;flex:none;border-radius:15px;background:var(--ms,#fdeaff);display:grid;place-items:center;font-size:1.7rem}
+  .meet-card h3{font-size:1.08rem;line-height:1.3}
+  .meet-card .mc-when{color:var(--muted);font-size:.82rem;margin-top:2px}
+  .meet-card p{color:var(--slate);font-size:.88rem;line-height:1.6;margin-bottom:12px}
+  .meet-card .btn{margin-top:auto;width:100%}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__mark">🏘️</span>
+      <span class="logo__text">حي أجيال<small>حيّك في مكان واحد</small></span>
+    </a>
+    <a href="index.html" class="back">← الرئيسية</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <nav class="crumb"><a href="index.html">الرئيسية</a> › ركن نساء الحي</nav>
+    <h1>🌸 ركن نساء الحي</h1>
+    <p>مساحة خاصة لجارات الحي — خدمات وأنشطة وملتقيات ودورات، بخصوصية تامة.</p>
+  </div>
+</section>
+
+<section style="padding-top:22px">
+  <div class="container">
+
+    <div class="wnote">🔒 <span>خصوصيتك أولًا: ما نعرض صور ولا أرقام جوال لأحد. التواصل يتم بعد إرسال الطلب فقط.</span></div>
+
+    <!-- ١) خدمات نساء الحي -->
+    <div class="wsection" id="wservices">
+      <h2 class="sec-t">💇‍♀️ خدمات نساء الحي</h2>
+      <p class="sec-p">مزوّدات من داخل الحي — اطلبي الخدمة وبيتواصلن معك.</p>
+      <div class="grid g3">
+
+        <div class="serv reveal">
+          <div class="sic">💇‍♀️</div>
+          <div style="flex:1">
+            <h3>كوافيرة منزلية</h3>
+            <p>تسريح ومكياج للمناسبات في بيتك</p>
+            <span class="rating" style="font-size:.88rem">★ من جارات الحي</span>
+          </div>
+          <button class="btn btn-primary">طلب الخدمة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">✂️</div>
+          <div style="flex:1">
+            <h3>خياطة وتفصيل</h3>
+            <p>فساتين مناسبات وتعديل وتضييق</p>
+            <span class="rating" style="font-size:.88rem">★ من جارات الحي</span>
+          </div>
+          <button class="btn btn-primary">طلب الخدمة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">🎨</div>
+          <div style="flex:1">
+            <h3>نقش الحناء</h3>
+            <p>حناء أعراس ومناسبات ونقشات حديثة</p>
+            <span class="rating" style="font-size:.88rem">★ من جارات الحي</span>
+          </div>
+          <button class="btn btn-primary">طلب الخدمة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">📚</div>
+          <div style="flex:1">
+            <h3>معلمة خصوصية</h3>
+            <p>تأسيس ومتابعة مدرسية للبنات</p>
+            <span class="rating" style="font-size:.88rem">★ من جارات الحي</span>
+          </div>
+          <button class="btn btn-primary">طلب الخدمة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">📷</div>
+          <div style="flex:1">
+            <h3>تصوير نسائي</h3>
+            <p>تصوير مناسبات وحفلات نسائية</p>
+            <span class="rating" style="font-size:.88rem">★ من جارات الحي</span>
+          </div>
+          <button class="btn btn-primary">طلب الخدمة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">💆‍♀️</div>
+          <div style="flex:1">
+            <h3>عناية وبشرة</h3>
+            <p>جلسات عناية منزلية بالبشرة والشعر</p>
+            <span class="rating" style="font-size:.88rem">★ من جارات الحي</span>
+          </div>
+          <button class="btn btn-primary">طلب الخدمة</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ٢) نادي المشي -->
+    <div class="wsection" id="wwalk">
+      <h2 class="sec-t">🚶‍♀️ نادي المشي والرياضة</h2>
+      <p class="sec-p">مسار مخصص للجارات بأوقات آمنة ومريحة.</p>
+      <div class="walk-card reveal">
+        <div class="wc-ic">🚶‍♀️</div>
+        <div class="wc-b">
+          <h3>نادي مشي نساء أجيال</h3>
+          <p>مشي جماعي في ممشى الحديقة المركزية — الوقت مخصص للنساء، والمجموعة تنسّق عبر واتساب.</p>
+          <div class="wc-times">
+            <span>🌅 صباحًا ٦:٠٠ – ٧:٣٠</span>
+            <span>🌆 مساءً ٨:٠٠ – ٩:٣٠</span>
+            <span>📅 يوميًا عدا الجمعة</span>
+            <span>📍 الحديقة المركزية</span>
+          </div>
+          <button class="btn btn-primary">الانضمام للنادي</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ٣) ملتقيات وبازار -->
+    <div class="wsection" id="wmeet">
+      <h2 class="sec-t">☕ ملتقيات وبازار</h2>
+      <p class="sec-p">لقاءات دورية بين جارات الحي — سجّلي حضورك ونحجز لك مكان.</p>
+      <div class="info-grid">
+
+        <div class="meet-card reveal">
+          <div class="mc-top">
+            <div class="mc-ic" style="--ms:#fff3df">☕</div>
+            <div><h3>قهوة الصباح</h3><div class="mc-when">كل ثلاثاء · ٩:٣٠ ص</div></div>
+          </div>
+          <p>جلسة صباحية بين الجارات مع ضيافة خفيفة — فرصة للتعارف.</p>
+          <div class="mc-when" style="margin-bottom:10px">📍 مجلس الحي</div>
+          <button class="btn btn-primary">تسجيل الحضور</button>
+        </div>
+
+        <div class="meet-card reveal">
+          <div class="mc-top">
+            <div class="mc-ic" style="--ms:#e6faf6">🛍️</div>
+            <div><h3>بازار نساء الحي</h3><div class="mc-when">أول سبت من كل شهر</div></div>
+          </div>
+          <p>سوق دوري لمنتجات الجارات: أكل بيتي، حرف، عطور، وإكسسوارات.</p>
+          <div class="mc-when" style="margin-bottom:10px">📍 قاعة الحي</div>
+          <button class="btn btn-primary">تسجيل الحضور</button>
+        </div>
+
+        <div class="meet-card reveal">
+          <div class="mc-top">
+            <div class="mc-ic" style="--ms:#e7f5ef">🌿</div>
+            <div><h3>ملتقى الجارات الشهري</h3><div class="mc-when">آخر أربعاء · ٦:٠٠ م</div></div>
+          </div>
+          <p>لقاء شهري مفتوح لمناقشة أفكار ومبادرات تخص نساء الحي.</p>
+          <div class="mc-when" style="margin-bottom:10px">📍 الحديقة المركزية</div>
+          <button class="btn btn-primary">تسجيل الحضور</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ٤) دورات وورش -->
+    <div class="wsection" id="wcourses">
+      <h2 class="sec-t">🎨 دورات وورش</h2>
+      <p class="sec-p">تعلّمي مهارة جديدة مع جاراتك — المقاعد محدودة.</p>
+      <div class="grid g3">
+
+        <div class="serv reveal">
+          <div class="sic">✂️</div>
+          <div style="flex:1">
+            <h3>ورشة الخياطة</h3>
+            <p>كل أحد · ٥:٠٠ م · ٨ مقاعد</p>
+            <span class="rating" style="font-size:.88rem">★ للمبتدئات</span>
+          </div>
+          <button class="btn btn-primary">التسجيل في الورشة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">🍳</div>
+          <div style="flex:1">
+            <h3>دورة الطبخ الصحي</h3>
+            <p>كل خميس · ٤:٠٠ م · ١٠ مقاعد</p>
+            <span class="rating" style="font-size:.88rem">★ وصفات عملية</span>
+          </div>
+          <button class="btn btn-primary">التسجيل في الدورة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">🧶</div>
+          <div style="flex:1">
+            <h3>أشغال يدوية وكروشيه</h3>
+            <p>كل سبت · ٦:٠٠ م · ١٢ مقعدًا</p>
+            <span class="rating" style="font-size:.88rem">★ لكل الأعمار</span>
+          </div>
+          <button class="btn btn-primary">التسجيل في الورشة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">💪</div>
+          <div style="flex:1">
+            <h3>لياقة نسائية</h3>
+            <p>أحد وثلاثاء وخميس · ٧:٠٠ م</p>
+            <span class="rating" style="font-size:.88rem">★ مدرّبة مختصة</span>
+          </div>
+          <button class="btn btn-primary">التسجيل في الدورة</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ٥) تحفيظ وجليسة -->
+    <div class="wsection" id="wmore">
+      <h2 class="sec-t">📖 حلقة التحفيظ وتبادل الجليسة</h2>
+      <p class="sec-p">مبادرتان من جارات الحي لبعضهن.</p>
+      <div class="grid g2">
+
+        <div class="serv reveal">
+          <div class="sic">📖</div>
+          <div style="flex:1">
+            <h3>حلقة تحفيظ النساء</h3>
+            <p>السبت بعد العشاء · مصلى النساء</p>
+            <span class="rating" style="font-size:.88rem">★ حفظ ومراجعة وتجويد</span>
+          </div>
+          <button class="btn btn-primary">التسجيل في الحلقة</button>
+        </div>
+
+        <div class="serv reveal">
+          <div class="sic">👶</div>
+          <div style="flex:1">
+            <h3>تبادل جليسة الأطفال</h3>
+            <p>الجارات يتناوبن على رعاية الصغار</p>
+            <span class="rating" style="font-size:.88rem">★ بدون مقابل — تعاون بين الجيران</span>
+          </div>
+          <button class="btn btn-primary">الانضمام للتبادل</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <a href="index.html" class="logo" style="justify-content:center"><span class="logo__mark">🏘️</span><span class="logo__text" style="color:#fff">حي أجيال</span></a>
+    <div class="foot-links">
+      <a href="restaurants.html">المطاعم</a>
+      <a href="events.html">الفعاليات</a>
+      <a href="events.html#comp">المسابقات</a>
+      <a href="services.html">الخدمات</a>
+      <a href="families.html">الأسر المنتجة</a>
+      <a href="events.html#news">الأخبار</a>
+      <a href="haraj.html">الحراج</a>
+      <a href="occasions.html">المناسبات</a>
+      <a href="women.html">ركن النساء</a>
+      <a href="map.html">الخريطة</a>
+      <a href="calendar.html">التقويم</a>
+      <a href="emergency.html">الطوارئ</a>
+      <a href="privacy.html">الخصوصية</a>
+    </div>
+    <div class="foot-bottom">© ٢٠٢٦ حي أجيال — منصة أهل الحي</div>
+  </div>
+</footer>
+
+<script src="app.js?v=23"></script>
+</body>
+</html>

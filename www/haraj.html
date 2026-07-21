@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20" />
+<link rel="stylesheet" href="styles.css?v=23" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 <style>
   body{padding-bottom:86px}
@@ -106,7 +106,7 @@
   </div>
 </footer>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=23"></script>
 <script>
 const HK='hayna_haraj_v1';
 const ls=()=>{try{return JSON.parse(localStorage.getItem(HK))||[]}catch(e){return[]}};
@@ -143,11 +143,11 @@ function render(){
     const wa = ph?`https://wa.me/966${ph.replace(/^0/,'')}`:'#';
     const price = x.type==='free' ? '<span class="price free">مجاني 🎁</span>' : `<span class="price">${Number(x.price||0).toLocaleString('ar-EG')} ﷼</span>`;
     return `<article class="hcard">
-      <div class="hcard__img">${x.emoji||'📦'}</div>
+      <div class="hcard__img">${esc(x.emoji||'📦')}</div>
       <div class="hcard__b">
-        <div class="hcard__t"><h3>${x.title||'إعلان'}</h3>${price}</div>
-        <p>${x.descr||''}</p>
-        <div class="hcard__f"><span class="by">👤 ${x.name||'جار'}</span>
+        <div class="hcard__t"><h3>${esc(x.title||'إعلان')}</h3>${price}</div>
+        <p>${esc(x.descr||'')}</p>
+        <div class="hcard__f"><span class="by">👤 ${esc(x.name||'جار')}</span>
           <a class="wa" target="_blank" href="${wa}">💬 تواصل</a></div>
       </div>
     </article>`;
@@ -173,8 +173,8 @@ document.querySelectorAll('input[name=type]').forEach(r=>r.addEventListener('cha
 document.getElementById('hForm').addEventListener('submit',e=>{
   e.preventDefault();
   const type=document.querySelector('input[name=type]:checked').value;
-  const rec={ type, title:hTitle.value.trim(), price: type==='free'?0:Number(hPrice.value||0),
-    descr:hDesc.value.trim(), name:'جار الحي', phone:hPhone.value.trim(), emoji:type==='free'?'🎁':'🏷️', ts:Date.now() };
+  const rec={ type, title:clean(hTitle.value,80), price: type==='free'?0:Math.max(0,Number(hPrice.value)||0),
+    descr:clean(hDesc.value,200), name:'جار الحي', phone:escPhone(hPhone.value), emoji:type==='free'?'🎁':'🏷️', ts:Date.now() };
   const all=ls(); all.push(rec); localStorage.setItem(HK,JSON.stringify(all));
   if(window.AjyalCloud) window.AjyalCloud.insert('requests', { action:'haraj', item:rec.title, name:rec.name,
     phone:rec.phone, extra:JSON.stringify({type:rec.type, price:rec.price, descr:rec.descr, emoji:rec.emoji}), ts:rec.ts });

@@ -33,6 +33,19 @@ window.AjyalCloud = { enabled:false, insert:async()=>{}, list:async()=>null };
     new Date().toLocaleDateString('ar-SA-u-nu-latn',{weekday:'long',day:'numeric',month:'long'}); }catch(e){} }
 })();
 
+/* ===== حماية: تهريب النصوص قبل عرضها =====
+   أي نص يكتبه المستخدم (طلب/إعلان/مناسبة) لازم يمر من esc قبل ما ينحط في الصفحة،
+   عشان ما يقدر أحد يحقن سكربت يشتغل عند بقية أهل الحي أو في لوحة التحكم. */
+window.esc = function(v){
+  return String(v==null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+};
+/* أرقام الجوال: أرقام و + فقط (تمنع الحقن داخل روابط tel: و واتساب) */
+window.escPhone = function(v){ return String(v==null ? '' : v).replace(/[^0-9+]/g,'').slice(0,20); };
+/* تنظيف المدخلات قبل الحفظ (طبقة ثانية) + حد أقصى للطول */
+window.clean = function(v, max){ return String(v==null ? '' : v).replace(/[<>]/g,'').trim().slice(0, max||200); };
+
 /* توست */
 let _toT;
 function toast(msg){
@@ -44,6 +57,9 @@ function toast(msg){
 
 /* ===================== نافذة الطلب / الحجز ===================== */
 function _reqCfg(action){
+  if(/نادي/.test(action))   return {title:'الانضمام لنادي المشي', sub:'عبّئ البيانات وبنضيفك لمجموعة النادي.', submit:'انضم الآن', noItem:true, extra:'الوقت المفضّل (صباحًا/مساءً)'};
+  if(/تبادل/.test(action))  return {title:'الانضمام لتبادل جليسة الأطفال', sub:'عبّئ البيانات وبننسّق بينك وبين الجارات.', submit:'انضم الآن', noItem:true, extra:'أعمار الأطفال'};
+  if(/الدورة|الورشة|الحلقة/.test(action)) return {title:'التسجيل في', sub:'عبّئ البيانات لحجز المقعد.', submit:'سجّل الآن', extra:'ملاحظة (اختياري)'};
   if(/انضم/.test(action))    return {title:'الانضمام لحي أجيال', sub:'سجّل بياناتك للانضمام لمنصة الحي.', submit:'انضم الآن', noItem:true, extra:'الحي / الشارع'};
   if(/أسرتك/.test(action))   return {title:'تسجيل أسرة منتجة', sub:'سجّل أسرتك وبنراجع طلبك ونتواصل معك.', submit:'سجّل الأسرة', noItem:true, extra:'نوع المنتجات'};
   if(/توصيل/.test(action))   return {title:'طلب توصيل من', sub:'حدّد طلبك وبيوصلك موصّل من الحي بأسرع وقت.', submit:'أرسل الطلب', extra:'تفاصيل الطلب'};
@@ -70,8 +86,8 @@ function _ensureModal(){
   bd.addEventListener('click',e=>{ if(e.target===bd||e.target.closest('[data-close]')) _closeModal(); });
   bd.querySelector('#rqForm').addEventListener('submit',e=>{
     e.preventDefault(); const f=e.target;
-    const rec={item:bd.dataset.item||'', action:bd.dataset.action||'',
-      name:f.name.value.trim(), phone:f.phone.value.trim(), extra:f.extra.value.trim(), ts:Date.now()};
+    const rec={item:clean(bd.dataset.item,120), action:clean(bd.dataset.action,80),
+      name:clean(f.name.value,80), phone:escPhone(f.phone.value), extra:clean(f.extra.value,300), ts:Date.now()};
     const key='hayna_requests_v1';
     let all=[]; try{all=JSON.parse(localStorage.getItem(key))||[];}catch(e){}
     all.push(rec); localStorage.setItem(key,JSON.stringify(all));

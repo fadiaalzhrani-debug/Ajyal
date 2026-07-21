@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20" />
+<link rel="stylesheet" href="styles.css?v=23" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 <style>
   .sos-note{display:flex;align-items:center;gap:12px;background:#fee9e9;border:1px solid #fbcaca;color:#b91c1c;
@@ -74,7 +74,7 @@
   </div>
 </footer>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=23"></script>
 <script>
 const toAr=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const EMG=[
@@ -100,7 +100,7 @@ const LOCAL=[
 const HK='ajyal_hotlines_v1';
 const hot=()=>{try{return JSON.parse(localStorage.getItem(HK))||{}}catch(e){return{}}};
 
-function callBtn(num,red){ return `<a class="ecall${red?' red':''}" href="tel:${num}">📞 اتصال</a>`; }
+function callBtn(num,red){ return `<a class="ecall${red?' red':''}" href="tel:${escPhone(num)}">📞 اتصال</a>`; }
 function fixed(list,red){
   return list.map(x=>`<div class="ecard"><div class="ei" style="--es:${x.es}">${x.i}</div>
     <div class="eb"><h3>${x.n}</h3><span>${x.s} · ${toAr(x.num)}</span></div>${callBtn(x.num,red)}</div>`).join('');
@@ -115,7 +115,7 @@ function renderLocal(){
     const action = num
       ? `${callBtn(num,0)}`
       : `<button class="eadd" data-role="${x.role}" data-name="${x.n}">➕ أضف الرقم</button>`;
-    const sub = num ? toAr(num) : 'لم يُضف بعد';
+    const sub = num ? toAr(escPhone(num)) : 'لم يُضف بعد';
     return `<div class="ecard"><div class="ei" style="--es:#eef2f7">${x.i}</div>
       <div class="eb"><h3>${x.n}</h3><span>${sub}</span></div>${action}</div>`;
   }).join('');

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20" />
+<link rel="stylesheet" href="styles.css?v=23" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 <style>
   body{padding-bottom:86px}
@@ -115,7 +115,7 @@
   </div>
 </footer>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=23"></script>
 <script>
 const OK='hayna_occasions_v1', RK='hayna_occ_reacts_v1';
 const ls=()=>{try{return JSON.parse(localStorage.getItem(OK))||[]}catch(e){return[]}};
@@ -163,17 +163,17 @@ function render(){
   g.innerHTML = list.map(x=>{
     const K=KINDS[x.kind];
     const msg = x.msg && x.msg.trim() ? x.msg : K.def;
-    const by = x.name && x.name.trim() ? '<div class="occ-by">— من جارك '+x.name+'</div>' : '';
+    const by = x.name && x.name.trim() ? '<div class="occ-by">— من جارك '+esc(x.name)+'</div>' : '';
     const did = rx.includes(x.id);
     const count = (x.rx||0) + (did?1:0);
     return `<article class="occ-card" style="--k:${K.k};--ks:${K.ks};--ki:${K.ki}">
       <div class="occ-ic">${K.emoji}</div>
       <div class="occ-b">
-        <div class="occ-top"><span class="occ-tag">${K.tag}</span><time>${timeAgo(x.ts)}</time></div>
-        <h3>${K.tag} · ${x.who}</h3>
-        <p class="occ-msg">«${msg}»</p>
+        <div class="occ-top"><span class="occ-tag">${K.tag}</span><time>${esc(timeAgo(x.ts))}</time></div>
+        <h3>${K.tag} · ${esc(x.who)}</h3>
+        <p class="occ-msg">«${esc(msg)}»</p>
         ${by}
-        <button class="occ-react${did?' done':''}" data-id="${x.id}" ${did?'disabled':''}>
+        <button class="occ-react${did?' done':''}" data-id="${esc(x.id)}" ${did?'disabled':''}>
           <span class="rx">${K.rx.split(' ')[0]}</span> ${K.rx.split(' ').slice(1).join(' ')} <b>${count.toLocaleString('ar-EG')}</b></button>
       </div>
     </article>`;
@@ -205,8 +205,8 @@ modal.addEventListener('click',e=>{ if(e.target===modal||e.target.closest('[data
 document.getElementById('oForm').addEventListener('submit',e=>{
   e.preventDefault();
   const kind=document.querySelector('input[name=kind]:checked').value;
-  const rec={ id:'u'+Date.now(), kind, who:document.getElementById('oWho').value.trim(),
-    msg:document.getElementById('oMsg').value.trim(), name:document.getElementById('oName').value.trim(), ts:Date.now(), rx:0 };
+  const rec={ id:'u'+Date.now(), kind, who:clean(document.getElementById('oWho').value,60),
+    msg:clean(document.getElementById('oMsg').value,200), name:clean(document.getElementById('oName').value,60), ts:Date.now(), rx:0 };
   const all=ls(); all.push(rec); localStorage.setItem(OK,JSON.stringify(all));
   if(window.AjyalCloud) window.AjyalCloud.insert('requests', { action:'occasion', item:rec.who, name:rec.name,
     phone:'', extra:JSON.stringify({kind:rec.kind, msg:rec.msg, rx:0}), ts:rec.ts });

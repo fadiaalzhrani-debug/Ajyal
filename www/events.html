@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20" />
+<link rel="stylesheet" href="styles.css?v=23" />
 <meta name="theme-color" content="#047857" /><link rel="manifest" href="manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="حي أجيال" /><link rel="apple-touch-icon" href="icon-192.png" />
 </head>
 <body>
@@ -245,6 +245,7 @@
       <a href="events.html#news">الأخبار</a>
       <a href="haraj.html">الحراج</a>
       <a href="occasions.html">المناسبات</a>
+      <a href="women.html">ركن النساء</a>
       <a href="map.html">الخريطة</a>
       <a href="calendar.html">التقويم</a>
       <a href="emergency.html">الطوارئ</a>
@@ -254,18 +255,18 @@
   </div>
 </footer>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=23"></script>
 <script>
 const SAVE_KEY='hayna_regs_v1';
 const regForm=document.getElementById('regForm');
 function loadRegs(){try{return JSON.parse(localStorage.getItem(SAVE_KEY))||[]}catch{return[]}}
 function renderMine(){
   const r=loadRegs();const el=document.getElementById('regMine');
-  el.innerHTML = r.length ? `تسجيلاتك (${r.length}): `+r.map(x=>`<b>${x.comp}</b>`).join('، ') : '';
+  el.innerHTML = r.length ? `تسجيلاتك (${r.length}): `+r.map(x=>`<b>${esc(x.comp)}</b>`).join('، ') : '';
 }
 regForm.addEventListener('submit',e=>{
   e.preventDefault();
-  const rec={name:rName.value.trim(),age:regForm.age.value,comp:rComp.value,phone:rPhone.value.trim(),ts:Date.now()};
+  const rec={name:clean(rName.value,80),age:clean(regForm.age.value,40),comp:clean(rComp.value,80),phone:escPhone(rPhone.value),ts:Date.now()};
   const all=loadRegs();all.push(rec);localStorage.setItem(SAVE_KEY,JSON.stringify(all));
   if(window.AjyalCloud) window.AjyalCloud.insert('registrations', rec);
   document.getElementById('regOk').style.display='block';
