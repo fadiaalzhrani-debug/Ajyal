@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=25" />
+<link rel="stylesheet" href="styles.css?v=26" />
 <style>
   .adm{max-width:1080px;margin:0 auto;padding:24px 4%}
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
@@ -87,6 +87,7 @@
   <div class="tabs" id="tabs">
     <button data-t="req" class="active">الطلبات والحجوزات</button>
     <button data-t="reg">تسجيلات المسابقات</button>
+    <button data-t="sug">الاقتراحات</button>
     <button data-t="event">الفعاليات</button>
     <button data-t="news">الأخبار</button>
     <button data-t="haraj">الحراج</button>
@@ -121,7 +122,7 @@
   </form>
 </div>
 
-<script src="app.js?v=25"></script>
+<script src="app.js?v=26"></script>
 <script>
 /* ====== تسجيل الدخول عبر Supabase (البيانات ما تُقرأ إلا بحساب) ====== */
 const gate=document.getElementById('gate'), panel=document.getElementById('panel');
@@ -153,7 +154,8 @@ document.getElementById('logout').addEventListener('click',async()=>{
 });
 
 /* ====== البيانات ====== */
-let current='req', REQ=[], REG=[], CONTENT=[], HARAJ=[], OCC=[];
+let current='req', REQ=[], REG=[], CONTENT=[], HARAJ=[], OCC=[], SUG=[];
+const SUG_KINDS=['اقتراح','شكوى','شكر'];
 const ls=(k)=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
 const fmt=(ts)=>{ if(!ts)return '—'; const d=new Date(ts); return d.toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('ar-SA-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); };
 
@@ -168,7 +170,8 @@ async function load(){
     REQ = ls('hayna_requests_v1').slice().reverse();
     REG = ls('hayna_regs_v1').slice().reverse();
   }
-  REQ = (REQ||[]).filter(r=>r.action!=='haraj' && r.action!=='occasion');   // الحراج والمناسبات لها تبويباتها
+  SUG = (REQ||[]).filter(r=>SUG_KINDS.includes(r.action));                 // الاقتراحات لها تبويبها
+  REQ = (REQ||[]).filter(r=>r.action!=='haraj' && r.action!=='occasion' && !SUG_KINDS.includes(r.action));
   if(cloud){
     CONTENT = (await window.AjyalCloud.list('content'))   || [];
     HARAJ   = (await window.AjyalCloud.list('haraj'))     || [];
@@ -197,6 +200,16 @@ function render(){
     const list=REG.filter(r=>!q||JSON.stringify(r).toLowerCase().includes(q));
     rows=list.map(r=>`<tr><td>${esc(r.name||'—')}</td><td>${esc(r.age||'—')}</td><td>${esc(r.comp||'—')}</td>
       <td><a class="phone-link" href="tel:${escPhone(r.phone)}">${esc(r.phone||'—')}</a></td><td>${esc(fmt(r.ts||r.created_at))}</td></tr>`).join('');
+  }
+  else if(current==='sug'){
+    thead.innerHTML='<tr><th>النوع</th><th>القسم</th><th>الرسالة</th><th>المرسل</th><th>الجوال</th><th>متى</th></tr>';
+    const ICO={'اقتراح':'💡','شكوى':'⚠️','شكر':'🌟'};
+    const list=SUG.filter(r=>!q||JSON.stringify(r).toLowerCase().includes(q));
+    rows=list.map(r=>`<tr><td>${esc((ICO[r.action]||'')+' '+(r.action||'—'))}</td><td>${esc(r.item||'—')}</td>
+      <td style="white-space:normal;min-width:280px">${esc(r.extra||'—')}</td>
+      <td>${esc(r.name||'—')}</td>
+      <td>${r.phone?`<a class="phone-link" href="tel:${escPhone(r.phone)}">${esc(r.phone)}</a>`:'—'}</td>
+      <td>${esc(fmt(r.ts||r.created_at))}</td></tr>`).join('');
   }
   else if(current==='event' || current==='news'){
     const isEv = current==='event';
@@ -227,7 +240,7 @@ function render(){
   }
   tbody.innerHTML = rows || '<tr><td colspan="6" class="empty">لا توجد بيانات بعد</td></tr>';
   document.getElementById('addBtn').style.display = (current==='event'||current==='news') ? '' : 'none';
-  document.getElementById('export').style.display = (current==='req'||current==='reg') ? '' : 'none';
+  document.getElementById('export').style.display = (current==='req'||current==='reg'||current==='sug') ? '' : 'none';
 }
 
 /* حذف (فعالية / خبر / إعلان / مناسبة) */
@@ -271,7 +284,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
 document.getElementById('search').addEventListener('input',render);
 document.getElementById('refresh').addEventListener('click',load);
 document.getElementById('export').addEventListener('click',()=>{
-  const data = current==='req'?REQ:REG;
+  const data = current==='req'?REQ:(current==='sug'?SUG:REG);
   if(!data.length){ toast('لا توجد بيانات للتصدير'); return; }
   const keys=[...new Set(data.flatMap(o=>Object.keys(o)))];
   const csv=[keys.join(',')].concat(data.map(o=>keys.map(k=>`"${(o[k]??'').toString().replace(/"/g,'""')}"`).join(','))).join('\n');
