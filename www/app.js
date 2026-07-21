@@ -21,6 +21,7 @@ window.AjyalCloud = { enabled:false, insert:async()=>{}, list:async()=>null };
       enabled:true,
       insert:async(t,r)=>{ try{ await sb.from(t).insert(r); }catch(e){} },
       list:async(t)=>{ try{ const {data,error}=await sb.from(t).select('*').order('created_at',{ascending:false}); if(error) return null; return data||[]; }catch(e){ return null; } },
+      remove:async(t,id)=>{ try{ const {error}=await sb.from(t).delete().eq('id',id); return !error; }catch(e){ return false; } },
       /* تسجيل دخول لوحة التحكم — الطلبات والتسجيلات ما تُقرأ إلا بحساب */
       signIn:async(email,password)=>{
         try{ const {error}=await sb.auth.signInWithPassword({email,password});
@@ -53,6 +54,19 @@ window.esc = function(v){
 window.escPhone = function(v){ return String(v==null ? '' : v).replace(/[^0-9+]/g,'').slice(0,20); };
 /* تنظيف المدخلات قبل الحفظ (طبقة ثانية) + حد أقصى للطول */
 window.clean = function(v, max){ return String(v==null ? '' : v).replace(/[<>]/g,'').trim().slice(0, max||200); };
+
+/* "قبل ساعتين" تُحسب من التاريخ الفعلي — ما تبقى ثابتة */
+window.timeAgo = function(ts){
+  const t = Number(ts) || 0; if(!t) return '';
+  const s = Math.floor((Date.now() - t)/1000);
+  if(s < 120)    return 'الآن';
+  if(s < 3600)   return 'قبل ' + Math.floor(s/60) + ' دقيقة';
+  if(s < 7200)   return 'قبل ساعة';
+  if(s < 86400)  return 'قبل ' + Math.floor(s/3600) + ' ساعات';
+  if(s < 172800) return 'أمس';
+  if(s < 2592000)return 'قبل ' + Math.floor(s/86400) + ' أيام';
+  return 'قبل ' + Math.floor(s/2592000) + ' شهر';
+};
 
 /* توست */
 let _toT;
@@ -185,16 +199,24 @@ window.AjyalNative = (function(){
     }
   };
 })();
-/* أضِف زر "ذكّرني" على بطاقات الفعاليات */
-document.querySelectorAll('.card.event').forEach(card=>{
-  const body=card.querySelector('.event__body'); if(!body||body.querySelector('.remind-btn')) return;
-  const day=((card.querySelector('.event__date b')||{}).textContent||'').trim();
-  const title=((card.querySelector('h3')||{}).textContent||'فعالية الحي').trim();
-  const btn=document.createElement('button');
-  btn.className='btn btn-ghost remind-btn'; btn.style.marginTop='4px'; btn.textContent='🔔 ذكّرني';
-  btn.dataset.title=title; btn.dataset.date='2026-07-'+day.padStart(2,'0');
-  body.appendChild(btn);
-});
+/* أضِف زر "ذكّرني" على بطاقات الفعاليات — يُستدعى مجددًا بعد تحميل المحتوى من اللوحة */
+window.AjyalAddReminders = function(){
+  document.querySelectorAll('.card.event').forEach(card=>{
+    const body=card.querySelector('.event__body'); if(!body||body.querySelector('.remind-btn')) return;
+    const title=((card.querySelector('h3')||{}).textContent||'فعالية الحي').trim();
+    let iso = card.dataset.date || '';
+    if(!iso){   // بطاقة ثابتة: استخدم الشهر الحالي بدل تاريخ مثبّت
+      const day=((card.querySelector('.event__date b')||{}).textContent||'').replace(/[^0-9]/g,'');
+      if(day){ const n=new Date();
+        iso = n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'); }
+    }
+    const btn=document.createElement('button');
+    btn.className='btn btn-ghost remind-btn'; btn.style.marginTop='4px'; btn.textContent='🔔 ذكّرني';
+    btn.dataset.title=title; if(iso) btn.dataset.date=iso;
+    body.appendChild(btn);
+  });
+};
+window.AjyalAddReminders();
 document.addEventListener('click',e=>{
   const b=e.target.closest('.remind-btn'); if(!b) return;
   e.preventDefault();
