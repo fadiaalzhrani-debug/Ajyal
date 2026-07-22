@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=26" />
+<link rel="stylesheet" href="styles.css?v=27" />
 <style>
   .adm{max-width:1080px;margin:0 auto;padding:24px 4%}
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
@@ -122,7 +122,7 @@
   </form>
 </div>
 
-<script src="app.js?v=26"></script>
+<script src="app.js?v=27"></script>
 <script>
 /* ====== تسجيل الدخول عبر Supabase (البيانات ما تُقرأ إلا بحساب) ====== */
 const gate=document.getElementById('gate'), panel=document.getElementById('panel');
@@ -287,7 +287,9 @@ document.getElementById('export').addEventListener('click',()=>{
   const data = current==='req'?REQ:(current==='sug'?SUG:REG);
   if(!data.length){ toast('لا توجد بيانات للتصدير'); return; }
   const keys=[...new Set(data.flatMap(o=>Object.keys(o)))];
-  const csv=[keys.join(',')].concat(data.map(o=>keys.map(k=>`"${(o[k]??'').toString().replace(/"/g,'""')}"`).join(','))).join('\n');
+  /* حماية من حقن صيغ Excel: أي قيمة تبدأ بـ = + - @ نسبقها بفاصلة عليا حتى ما تُنفَّذ كصيغة */
+  const cell=v=>{ let s=(v??'').toString(); if(/^[=+\-@\t\r]/.test(s)) s="'"+s; return '"'+s.replace(/"/g,'""')+'"'; };
+  const csv=[keys.join(',')].concat(data.map(o=>keys.map(k=>cell(o[k])).join(','))).join('\n');
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='ajyal-'+current+'-'+Date.now()+'.csv';a.click();

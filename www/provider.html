@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=26" />
+<link rel="stylesheet" href="styles.css?v=27" />
 <style>
   .adm{max-width:940px;margin:0 auto;padding:24px 4%}
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
@@ -85,7 +85,7 @@
   </thead><tbody id="tbody"></tbody></table></div>
 </div>
 
-<script src="app.js?v=26"></script>
+<script src="app.js?v=27"></script>
 <script>
 const gate=document.getElementById('gate'), panel=document.getElementById('panel');
 let BIZ='', ALL=[];
@@ -134,7 +134,7 @@ async function load(){
   const tb=document.getElementById('tbody');
   tb.innerHTML = ALL.length ? ALL.map(r=>{
     const ph=(r.phone||'').replace(/[^0-9]/g,'');
-    const wa = ph ? `<a class="wa" target="_blank" href="https://wa.me/966${ph.replace(/^0/,'')}">واتساب</a>` : '—';
+    const wa = ph ? `<a class="wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/966${ph.replace(/^0/,'')}">واتساب</a>` : '—';
     return `<tr><td>${esc(r.name||'—')}</td><td><a class="phone-link" href="tel:${escPhone(r.phone)}">${esc(r.phone||'—')}</a></td>
       <td>${esc(r.action||'طلب')}</td><td>${esc(r.extra||'—')}</td><td>${esc(fmt(r.ts||r.created_at))}</td><td>${wa}</td></tr>`;
   }).join('') : '<tr><td colspan="6" class="empty">ما وصلك طلبات بعد</td></tr>';
